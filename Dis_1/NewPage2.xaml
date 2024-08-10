@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Dis_1.NewPage2"
+            
+             Title="NewPage2">
+    <StackLayout>
+        <Label Text="Press the button to send data to the server."
+               VerticalOptions="CenterAndExpand" 
+               HorizontalOptions="CenterAndExpand" />
+        <Button Text="Send Data" Clicked="OnSendButtonClicked" />
+        <Label x:Name="StatusLabel" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
+    </StackLayout>
+</ContentPage>
