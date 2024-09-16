@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Dis_1.View.GPS_page"
+             Title="GPS_page">
+   <StackLayout>
+        <Label Text="GPS Tracker" 
+               VerticalOptions="CenterAndExpand" 
+               HorizontalOptions="CenterAndExpand" />
+        <Button Text="Start Tracking" 
+                Clicked="OnStartTrackingClicked"/>
+    </StackLayout>
+</ContentPage>

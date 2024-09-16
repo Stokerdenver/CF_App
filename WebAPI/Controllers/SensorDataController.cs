@@ -7,7 +7,7 @@
     using WebAPI.Models;
 
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/SensorData")]
     public class SensorDataController : ControllerBase
     {
         private readonly AppDbContext _context;

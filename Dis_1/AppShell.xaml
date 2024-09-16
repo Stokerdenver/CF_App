@@ -4,15 +4,19 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:Dis_1"
+    xmlns:view="clr-namespace:Dis_1.View"
     Shell.FlyoutBehavior="Disabled"
     Title="Dis_1">
 
     <TabBar>
-        <Tab Title="1">
-            <ShellContent ContentTemplate="{DataTemplate local:NewPage1}" Route="NewPage1"/>
+        <Tab Title="Личный кабинет">
+            <ShellContent ContentTemplate="{DataTemplate local:PersonalAccount}" Route="PersonalAccount"/>
         </Tab>
-        <Tab Title="2">
-            <ShellContent ContentTemplate="{DataTemplate local:NewPage2}" Route="NewPage2" />
+        <Tab Title="GPS Кнопка">
+            <ShellContent ContentTemplate="{DataTemplate view:GPS_page}" Route="GPS_page" />
+        </Tab>
+        <Tab Title="GPS Авто">
+            <ShellContent ContentTemplate="{DataTemplate local:GPS_test}" Route="GPS_test" />
         </Tab>
     </TabBar>
 

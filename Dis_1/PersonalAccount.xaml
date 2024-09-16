@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Dis_1.PersonalAccount"
+             Title="PersonalAccount">
+    <ContentPage.Content>
+        <StackLayout Padding="20">
+
+            <!-- Поле ввода имени -->
+            <Label Text="Имя:" />
+            <Entry x:Name="NameEntry" Placeholder="Введите имя" />
+
+            <!-- Поле ввода стажа -->
+            <Label Text="Стаж:" />
+            <Entry x:Name="ExperienceEntry" Placeholder="Введите стаж" Keyboard="Numeric" />
+
+            <!-- Поле ввода возраста -->
+            <Label Text="Возраст:" />
+            <Entry x:Name="AgeEntry" Placeholder="Введите возраст" Keyboard="Numeric" />
+
+            <!-- Поле ввода пола -->
+            <Label Text="Пол:" />
+            <Entry x:Name="GenderEntry" Placeholder="Введите пол" />
+
+            <!-- Кнопка для добавления автомобиля -->
+            <Button Text="Добавить авто" Clicked="OnAddCarButtonClicked" />
+
+            <!-- Поле для ввода регистрационного номера автомобиля -->
+            <Entry x:Name="CarRegistrationEntry" Placeholder="Введите регистрационный номер" />
+
+            <!-- Выпадающий список с автомобилями -->
+            <Label Text="Выберите автомобиль:" />
+            <Picker x:Name="CarPicker" Title="Выберите автомобиль" />
+
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
