@@ -13,6 +13,10 @@ public partial class GPS_test : ContentPage
     // public LocationData test1;
 
     public string data_GPS;
+    public double longitudeToDb;
+    public double latitudeToDb;
+    public int speedToDb;
+
     async void StartLocationUpdates()
     {
         try
@@ -51,23 +55,18 @@ public partial class GPS_test : ContentPage
                     double speed = location.Speed.HasValue ? location.Speed.Value : 0;
                     gpsLabel.Text = $"GPS Coordinates: {location.Latitude}, {location.Longitude}";
                     speedLabel.Text = $"Speed: {speed} m/s";
-
-
-
-
                     data_GPS = Convert.ToString(speed) + " " + Convert.ToString(location.Latitude) + " " + Convert.ToString(location.Longitude);
-                    testLabel.Text = data_GPS;
 
+                   // проверяем то, что отправляем в бд
+                   testLabel.Text = data_GPS;
 
-                    // Обновление данных в объекте test1
-                    /* test1.Latitude = location.Latitude;
-                     test1.Longitude = location.Longitude;
-                     test1.Speed = speed;
-                    */
+                    longitudeToDb = Convert.ToDouble(location.Longitude);
+                    latitudeToDb = Convert.ToDouble(location.Latitude);
+                    speedToDb = (int)Convert.ToInt64(location.Speed);
 
 
                     // Отправка данных на сервер
-                   await SendDataToServerAsync();
+                    await SendDataToServerAsync();
                 }
             }
             catch (Exception ex)
@@ -83,17 +82,19 @@ public partial class GPS_test : ContentPage
     public async Task SendDataToServerAsync()
     {
         try
-        {   
+        {
             // если на сериализацию отдавать просто стринг - не рабоает
             // нужен объект вар типа и в атрибут этого объекта класть инфу
             var data = new
             {
-                Data = data_GPS
+                longitude = longitudeToDb,
+                latitude = latitudeToDb,
+                speed = speedToDb
             };
             var client = new HttpClient();
             var jsonData = JsonSerializer.Serialize(data);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            await client.PostAsync("http://10.0.2.2:5000/api/SensorData", content);
+            await client.PostAsync("http://10.0.2.2:5000/api/MainData", content);
         }
         catch (Exception ex)
         {

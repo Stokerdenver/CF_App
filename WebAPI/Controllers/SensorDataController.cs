@@ -1,13 +1,14 @@
 ﻿namespace WebAPI.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
     using System;
     using System.Threading.Tasks;
     using WebAPI.Data;
     using WebAPI.Models;
 
     [ApiController]
-    [Route("api/SensorData")]
+    [Route("api/[controller]")]
     public class SensorDataController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -22,7 +23,7 @@
         {
             if (data == null)
                 return BadRequest();
-
+           
             data.timestamp = DateTime.UtcNow;
             _context.sensordata.Add(data);
             await _context.SaveChangesAsync();
