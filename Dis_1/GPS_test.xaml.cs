@@ -8,6 +8,7 @@ public partial class GPS_test : ContentPage
 	public GPS_test()
 	{
 		InitializeComponent();
+       
     }
 
     // public LocationData test1;
@@ -74,6 +75,8 @@ public partial class GPS_test : ContentPage
                 gpsLabel.Text = $"Error: {ex.Message}";
             }
 
+
+
             // Задержка в 1 секунду перед следующим обновлением
             await Task.Delay(1000);
         }
@@ -102,9 +105,37 @@ public partial class GPS_test : ContentPage
         }
     }
 
-    private void Start_SendingData(object sender, EventArgs e)
+    public async Task GetAndSendWeatherAsync()
+    {
+        await UpdateAndSendDataAsync();
+
+        var client = new HttpClient();
+        var request = new HttpRequestMessage
+        {
+            Method = HttpMethod.Get,
+            RequestUri = new Uri("https://weatherapi-com.p.rapidapi.com/current.json?q=53.1%2C-0.13"),
+            Headers =
+            {
+                { "x-rapidapi-key", "e710e7dafdmsh85754b3dbe7d286p1afe9ejsnaf5dd92756f8" },
+                { "x-rapidapi-host", "weatherapi-com.p.rapidapi.com" },
+            },
+        };
+
+
+
+       
+
+
+    }
+
+
+
+
+
+    private async void Start_SendingData(object sender, EventArgs e)
     {
         // Запуск обновления данных
         StartLocationUpdates();
+        
     }
 }

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Dis_1.EditProfile"
+             Title="EditProfile">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20">
+
+            <!-- Заголовок -->
+            <Label Text="Изменить профиль"
+                   FontSize="Large"
+                   FontAttributes="Bold"
+                   TextColor="#4A4A4A"
+                   HorizontalOptions="Center"
+                   Margin="0,0,0,20" />
+
+            <!-- Имя водителя -->
+            <Label Text="Имя водителя:"
+                   FontAttributes="Bold"
+                   FontSize="Medium"
+                   TextColor="Black" />
+            <Entry Placeholder="Введите имя водителя" />
+
+            <!-- Стаж -->
+            <Label Text="Стаж:"
+                   FontAttributes="Bold"
+                   FontSize="Medium"
+                   TextColor="Black"
+                   Margin="0,10,0,0" />
+            <Entry Placeholder="Введите стаж" Keyboard="Numeric" />
+
+            <!-- Возраст -->
+            <Label Text="Возраст:"
+                   FontAttributes="Bold"
+                   FontSize="Medium"
+                   TextColor="Black"
+                   Margin="0,10,0,0" />
+            <Entry Placeholder="Введите возраст" Keyboard="Numeric" />
+
+            <!-- Пол -->
+            <Label Text="Пол:"
+                   FontAttributes="Bold"
+                   FontSize="Medium"
+                   TextColor="Black"
+                   Margin="0,10,0,0" />
+            <Picker Title="Выберите пол">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>М</x:String>
+                        <x:String>Ж</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+
+            <!-- Кнопка Сохранить -->
+            <Button Text="Сохранить"
+                    BackgroundColor="Black"
+                    TextColor="White"
+                    CornerRadius="10"
+                    HeightRequest="50"
+                    Margin="0,20,0,20"/>
+
+            <!-- Добавление автомобиля -->
+            <Frame CornerRadius="20"
+                   BackgroundColor="#C6A9F5"
+                   Padding="20">
+                <VerticalStackLayout>
+
+                    <!-- Заголовок для добавления автомобиля -->
+                    <Label Text="Добавить автомобиль"
+                           FontAttributes="Bold"
+                           FontSize="Medium"
+                           TextColor="Black"
+                           HorizontalOptions="Start" />
+
+                    <!-- Номер автомобиля -->
+                    <Label Text="Номер:"
+                           FontAttributes="Bold"
+                           FontSize="Medium"
+                           TextColor="Black"
+                           Margin="0,10,0,0" />
+                    <Entry Placeholder="Введите номер автомобиля" />
+
+                    <!-- Модель автомобиля -->
+                    <Label Text="Модель:"
+                           FontAttributes="Bold"
+                           FontSize="Medium"
+                           TextColor="Black"
+                           Margin="0,10,0,0" />
+                    <Entry Placeholder="Введите модель автомобиля" />
+
+                    <!-- Год выпуска -->
+                    <Label Text="Год выпуска:"
+                           FontAttributes="Bold"
+                           FontSize="Medium"
+                           TextColor="Black"
+                           Margin="0,10,0,0" />
+                    <Entry Placeholder="Введите год выпуска" Keyboard="Numeric" />
+
+                    <!-- Кнопка Добавить -->
+                    <Button Text="Добавить"
+                            BackgroundColor="Black"
+                            TextColor="White"
+                            CornerRadius="10"
+                            HeightRequest="50"
+                            Margin="0,20,0,0"/>
+                </VerticalStackLayout>
+            </Frame>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+
+</ContentPage>

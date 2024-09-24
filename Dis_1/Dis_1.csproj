@@ -65,10 +65,19 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="EditProfile.xaml.cs">
+	    <DependentUpon>EditProfile.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
 	  <MauiXaml Update="GPS_test.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="PersonalAccount.xaml">
+	  <MauiXaml Update="EditProfile.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Profile1.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="View\GPS_page.xaml">
