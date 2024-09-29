@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Dis_1.RegisterPage"
+             Title="RegisterPage">
+    <ScrollView>
+        <VerticalStackLayout Padding="20">
+
+            <!-- Заголовок -->
+            <Label Text="Изменить профиль"
+                FontSize="Large"
+                FontAttributes="Bold"
+                TextColor="#4A4A4A"
+                HorizontalOptions="Center"
+                Margin="0,0,0,20" />
+
+            <!-- Имя водителя -->
+            <Label Text="Имя водителя:"
+                FontAttributes="Bold"
+                FontSize="Medium"
+                TextColor="Black" />
+            <Entry x:Name = "NameEntry"  Placeholder="Введите имя водителя" />
+
+            <!-- Стаж -->
+            <Label Text="Стаж:"
+                FontAttributes="Bold"
+                FontSize="Medium"
+                TextColor="Black"
+                Margin="0,10,0,0" />
+            <Entry x:Name = "ExpEntry"  Placeholder="Введите стаж" Keyboard="Numeric" />
+
+            <!-- Возраст -->
+            <Label Text="Возраст:"
+                FontAttributes="Bold"
+                FontSize="Medium"
+                TextColor="Black"
+                Margin="0,10,0,0" />
+            <Entry x:Name = "AgeEntry" Placeholder="Введите возраст" Keyboard="Numeric" />
+
+            <!-- Пол -->
+            <Label Text="Пол:"
+                FontAttributes="Bold"
+                FontSize="Medium"
+                TextColor="Black"
+                Margin="0,10,0,0" />
+            <Picker x:Name="SexPicker" Title="Выберите пол" SelectedIndexChanged="OnGenderSelected">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>М</x:String>
+                        <x:String>Ж</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+
+            <!-- Добавление автомобиля -->
+            <Frame CornerRadius="20"
+                BackgroundColor="#C6A9F5"
+                Padding="20">
+                <VerticalStackLayout>
+
+                    <!-- Заголовок для добавления автомобиля -->
+                    <Label Text="Добавить автомобиль"
+                        FontAttributes="Bold"
+                        FontSize="Medium"
+                        TextColor="Black"
+                        HorizontalOptions="Start" />
+
+                    <!-- Номер автомобиля -->
+                    <Label Text="Номер:"
+                        FontAttributes="Bold"
+                        FontSize="Medium"
+                        TextColor="Black"
+                        Margin="0,10,0,0" />
+                    <Entry x:Name = "RegNumberEntry" Placeholder="Введите номер автомобиля" />
+
+                    <!-- Модель автомобиля -->
+                    <Label Text="Модель:"
+                        FontAttributes="Bold"
+                        FontSize="Medium"
+                        TextColor="Black"
+                        Margin="0,10,0,0" />
+                    <Entry x:Name = "ModelEntry" Placeholder="Введите модель автомобиля" />
+
+                    <!-- Кнопка Зарегестрироваться -->
+                    <Button Text="Зарегестрироваться"
+                         Clicked="OnRegisterClicked"
+                         BackgroundColor="Black"
+                         TextColor="White"
+                         CornerRadius="10"
+                         HeightRequest="50"
+                         Margin="0,20,0,0"/>
+                </VerticalStackLayout>
+            </Frame>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

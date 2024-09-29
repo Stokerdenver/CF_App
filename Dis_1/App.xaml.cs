@@ -8,12 +8,31 @@
             InitializeComponent();
 
             MainPage = new AppShell();
+
+            /*
+            // Проверка, зарегистрирован ли пользователь
+            if (IsUserRegistered())
+            {
+                MainPage = new AppShell(); // Главная страница приложения
+            }
+            else
+            {
+                MainPage = new RegisterPage(); // Страница регистрации
+            }
+
+            */
         }
 
         protected override void OnStart()
         {
             base.OnStart();
            // RequestLocationPermissionAndStartService();
+        }
+
+        private bool IsUserRegistered()
+        {
+            // Проверяем сохраненный флаг в Preferences
+            return Preferences.Get("IsRegistered", false);
         }
     }
 }

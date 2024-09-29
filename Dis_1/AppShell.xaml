@@ -12,9 +12,6 @@
         <Tab Title="Личный кабинет">
             <ShellContent ContentTemplate="{DataTemplate local:EditProfile}" Route="EditProfile"/>
         </Tab>
-        <Tab Title="GPS Кнопка">
-            <ShellContent ContentTemplate="{DataTemplate view:GPS_page}" Route="GPS_page" />
-        </Tab>
         <Tab Title="GPS Авто">
             <ShellContent ContentTemplate="{DataTemplate local:GPS_test}" Route="GPS_test" />
         </Tab>

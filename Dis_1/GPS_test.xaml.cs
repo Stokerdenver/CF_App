@@ -120,12 +120,6 @@ public partial class GPS_test : ContentPage
                 { "x-rapidapi-host", "weatherapi-com.p.rapidapi.com" },
             },
         };
-
-
-
-       
-
-
     }
 
 
