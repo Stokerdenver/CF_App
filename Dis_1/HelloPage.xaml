@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Dis_1.HelloPage"
+             Title="HelloPage">
+    <VerticalStackLayout Padding="30" Spacing="20" HorizontalOptions="Center" VerticalOptions="Center">
+
+        <!-- Приветствие -->
+        <Label Text="Добро пожаловать!"
+                   FontSize="Large"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   TextColor="Black"/>
+
+        <!-- Описание -->
+        <Label Text="Пожалуйста, войдите в свой аккаунт или зарегистрируйтесь, чтобы продолжить."
+                   FontSize="Medium"
+                   HorizontalOptions="Center"
+                   TextColor="Black"
+                   Margin="0,10,0,30"/>
+
+        <!-- Кнопка Войти -->
+        <Button Text="Войти"
+                    BackgroundColor="#2196F3"
+                    TextColor="White"
+                    CornerRadius="20"
+                    HorizontalOptions="FillAndExpand"
+                    Clicked="OnLoginClicked"/>
+
+        <!-- Кнопка Регистрация -->
+        <Button Text="Регистрация"
+                    BackgroundColor="#4CAF50"
+                    TextColor="White"
+                    CornerRadius="20"
+                    HorizontalOptions="FillAndExpand"
+                    Clicked="OnRegisterClicked"/>
+
+    </VerticalStackLayout>
+</ContentPage>

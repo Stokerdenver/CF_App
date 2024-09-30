@@ -7,7 +7,7 @@
         {
             InitializeComponent();
 
-            MainPage = new AppShell();
+            MainPage = new HelloPage();
 
             /*
             // Проверка, зарегистрирован ли пользователь

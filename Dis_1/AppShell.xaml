@@ -8,6 +8,12 @@
     Shell.FlyoutBehavior="Disabled"
     Title="Dis_1">
 
+    <!-- Определение кнопки logout в верхнем правом углу -->
+    <Shell.ToolbarItems>
+        <ToolbarItem  IconImageSource="logout.png" Order="Primary" Priority="0" Clicked="OnLogoutClicked"/>
+    </Shell.ToolbarItems>
+    
+    
     <TabBar>
         <Tab Title="Личный кабинет">
             <ShellContent ContentTemplate="{DataTemplate local:EditProfile}" Route="EditProfile"/>

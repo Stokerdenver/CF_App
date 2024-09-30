@@ -14,10 +14,11 @@ public partial class Profile1 : ContentPage
         LoadUserData();
     }
 
-    private async void LoadUserData()
+    public async void LoadUserData()
     {
         // Пример запроса к вашему Web API
         var user = await GetUserDataFromServer(UserName);
+        
 
         if (user != null)
         {
