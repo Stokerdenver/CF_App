@@ -6,19 +6,23 @@ using Newtonsoft.Json;
 public partial class Profile1 : ContentPage
 {
     public string UserName { get; set; }
-    public Profile1()
-	{
-		InitializeComponent();
-        
-        UserName = "stoker";
+
+    public Profile1() // Конструктор по умолчанию
+    {
+        InitializeComponent();
+
+        UserName = Preferences.Get("UserLogin", string.Empty);
+
         LoadUserData();
     }
-
+    
+   
     public async void LoadUserData()
     {
         // Пример запроса к вашему Web API
         var user = await GetUserDataFromServer(UserName);
-        
+
+        //await DisplayAlert("Внимание", "Метод отработал", "ОК");
 
         if (user != null)
         {
@@ -37,5 +41,6 @@ public partial class Profile1 : ContentPage
         var response = await client.GetStringAsync($"http://10.0.2.2:5000/api/User/{userName}");
         var user = JsonConvert.DeserializeObject<UserC>(response);
         return user;       
+        
     }
 }

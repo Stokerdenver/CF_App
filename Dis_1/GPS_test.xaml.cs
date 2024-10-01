@@ -63,7 +63,7 @@ public partial class GPS_test : ContentPage
 
                     longitudeToDb = Convert.ToDouble(location.Longitude);
                     latitudeToDb = Convert.ToDouble(location.Latitude);
-                    speedToDb = (int)Convert.ToInt64(location.Speed);
+                    speedToDb = Convert.ToInt32(location.Speed);
 
 
                     // Отправка данных на сервер

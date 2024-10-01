@@ -2,17 +2,19 @@ namespace Dis_1;
 
 public partial class LoginPage : ContentPage
 {
-	public LoginPage()
+    public string username;
+
+    public LoginPage()
 	{
 		InitializeComponent();
 	}
 
-    // Метод, который вызывается при нажатии на кнопку "Подтвердить"
     private async void OnLoginConfirmClicked(object sender, EventArgs e)
     {
-        
-        
-        var username = UsernameEntry.Text;
+
+        username = UsernameEntry.Text;
+
+        Preferences.Set("UserLogin", UsernameEntry.Text);
 
         // Проверяем, пустое ли имя
         if (string.IsNullOrWhiteSpace(username))
@@ -21,13 +23,21 @@ public partial class LoginPage : ContentPage
             return;
         }
 
-        // Здесь добавляем запрос к API для проверки наличия пользователя в базе данных
+        // Запрос к API для проверки наличия пользователя в базе данных
         bool userExists = await CheckUserExists(username);
 
         if (userExists)
         {
+
+            // Отправляем сообщение
+            //  MessagingCenter.Send(this, "UserLoggedIn");
+          /*  var profilePage = new Profile1(username);
+            profilePage.LoadUserData();
+          */ 
             // Если пользователь найден, переходим на главную страницу
             Application.Current.MainPage = new AppShell();
+
+          
 
         }
         else
@@ -45,8 +55,15 @@ public partial class LoginPage : ContentPage
         // Пример запроса к вашему WebAPI
         using (var client = new HttpClient())
         {
-            var response = await client.GetAsync($"http://10.0.2.2:5000/api/User/{username}");
-            return response.IsSuccessStatusCode; // Если 200, пользователь существует
+            var response = await client.GetStringAsync($"http://10.0.2.2:5000/api/User/{username}");
+            if (response != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }
