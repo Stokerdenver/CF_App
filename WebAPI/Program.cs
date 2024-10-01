@@ -23,6 +23,7 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHttpClient();
 
 // Configure PostgreSQL database connection
 builder.Services.AddDbContext<AppDbContext>(options =>

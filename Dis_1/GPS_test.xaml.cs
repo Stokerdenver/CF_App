@@ -17,6 +17,8 @@ public partial class GPS_test : ContentPage
     public double longitudeToDb;
     public double latitudeToDb;
     public int speedToDb;
+    public string username = Preferences.Get("UserLogin", string.Empty);
+    public bool isleader = true;
 
     async void StartLocationUpdates()
     {
@@ -92,7 +94,10 @@ public partial class GPS_test : ContentPage
             {
                 longitude = longitudeToDb,
                 latitude = latitudeToDb,
-                speed = speedToDb
+                speed = speedToDb,
+                username = username,
+                isleader = isleader
+               
             };
             var client = new HttpClient();
             var jsonData = JsonSerializer.Serialize(data);
@@ -103,23 +108,24 @@ public partial class GPS_test : ContentPage
         {
             gpsLabel.Text = $"Failed to send data: {ex.Message}";
         }
+        await SendWeatherAsync();
     }
 
-    public async Task GetAndSendWeatherAsync()
+    public async Task SendWeatherAsync()
     {
-        await UpdateAndSendDataAsync();
-
-        var client = new HttpClient();
-        var request = new HttpRequestMessage
+        var wdata = new
         {
-            Method = HttpMethod.Get,
-            RequestUri = new Uri("https://weatherapi-com.p.rapidapi.com/current.json?q=53.1%2C-0.13"),
-            Headers =
-            {
-                { "x-rapidapi-key", "e710e7dafdmsh85754b3dbe7d286p1afe9ejsnaf5dd92756f8" },
-                { "x-rapidapi-host", "weatherapi-com.p.rapidapi.com" },
-            },
+            longitude = longitudeToDb,
+            latitude = latitudeToDb,
+            username = username,
+            isleader = isleader
+
         };
+        var client = new HttpClient();
+        var jsonData = JsonSerializer.Serialize(wdata);
+        var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+        await client.PostAsync("http://10.0.2.2:5000/api/Weather", content);
+        await Task.Delay(2000);
     }
 
 
@@ -130,6 +136,7 @@ public partial class GPS_test : ContentPage
     {
         // Запуск обновления данных
         StartLocationUpdates();
+
         
     }
 }

@@ -13,5 +13,7 @@ namespace WebAPI.Models
         public double wind_kph { get; set; }
         public double precip_mm { get; set; }
         public int is_day { get; set; }
+        public string username { get; set; }
+        public bool isleader { get; set; }
     }
 }

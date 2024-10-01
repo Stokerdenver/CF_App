@@ -10,5 +10,9 @@ namespace WebAPI.Models
         public double latitude { get; set; }
         public int speed { get; set; }
         public DateTime timestamp { get; set; }
+        public string username { get; set; }
+        public bool isleader { get; set; }
+
+
     }
 }
