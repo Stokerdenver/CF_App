@@ -2,10 +2,12 @@ namespace Dis_1;
 using Dis_1.Model;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
 
 public partial class GPS_test : ContentPage
 {
-	public GPS_test()
+    private bool _isRunning; // Флаг для контроля выполнения
+    public GPS_test()
 	{
 		InitializeComponent();
        
@@ -33,7 +35,7 @@ public partial class GPS_test : ContentPage
                 gpsLabel.Text = "Location permission denied.";
                 return;
             }
-
+            
             // Запуск асинхронного процесса обновления и отправки данных
             await UpdateAndSendDataAsync();
         }
@@ -45,7 +47,7 @@ public partial class GPS_test : ContentPage
 
     async Task UpdateAndSendDataAsync()
     {
-        while (true)
+        while (_isRunning)
         {
             try
             {
@@ -134,9 +136,13 @@ public partial class GPS_test : ContentPage
 
     private async void Start_SendingData(object sender, EventArgs e)
     {
-        // Запуск обновления данных
-        StartLocationUpdates();
 
-        
+        _isRunning = true;
+        StartLocationUpdates();
+    }
+
+    private async void Stop_SendingData(object sender, EventArgs e)
+    {
+        _isRunning = false;
     }
 }
