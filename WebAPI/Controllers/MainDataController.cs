@@ -6,6 +6,7 @@
     using System.Threading.Tasks;
     using WebAPI.Data;
     using WebAPI.Models;
+    using WebAPI.Services;
 
     [ApiController]
     [Route("api/[controller]")]
@@ -30,6 +31,38 @@
             // Добавляем данные в базу данных
             _context.main_data.Add(mainData);
             await _context.SaveChangesAsync(); // Сохраняем изменения в базе данных
+
+            // Извлекаем данные других клиентов (за исключением текущего)
+            var otherClientsData = await _context.main_data
+                .Where(md => md.username != mainData.username)
+                .OrderByDescending(md => md.timestamp)
+                .ToListAsync();
+ 
+            foreach (var clientData in otherClientsData)
+            {
+                // Вычисляем расстояние между текущим клиентом и другим клиентом
+                var distance = DistanceCalculator.CalculateDistance(mainData.latitude, mainData.longitude,
+                                                                    clientData.latitude, clientData.longitude);
+
+                // Создаем новую запись для таблицы ClientDistances
+                var clientDistance = new ClientDistance
+                {
+                    client_id1  = mainData.username,
+                    client_id2 = clientData.username,
+                    distance = distance,
+                    timestamp = DateTime.UtcNow
+                };
+
+                // Сохраняем запись в базу данных
+                _context.client_distance.Add(clientDistance);
+            }
+
+            // Сохраняем изменения в базу данных
+            await _context.SaveChangesAsync();
+
+
+
+
 
             return Ok(mainData); // Возвращаем ответ с добавленными данными
         }

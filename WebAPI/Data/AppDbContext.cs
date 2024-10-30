@@ -12,7 +12,7 @@
         public DbSet<User> user { get; set; }
         public DbSet<MainData> main_data { get; set; }
         public DbSet<WeatherData> weather_data { get; set; }
-
+        public DbSet<ClientDistance> client_distance { get; set; }
 
     }
 }

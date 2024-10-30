@@ -15,9 +15,10 @@
     
     
     <TabBar>
-        <Tab Title="Личный кабинет">
+        <!--  <Tab Title="Личный кабинет"> 
             <ShellContent ContentTemplate="{DataTemplate local:EditProfile}" Route="EditProfile"/>
-        </Tab>
+        </Tab> 
+        -->
         <Tab Title="GPS Авто">
             <ShellContent ContentTemplate="{DataTemplate local:GPS_test}" Route="GPS_test" />
         </Tab>

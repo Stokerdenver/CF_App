@@ -4,6 +4,17 @@
              x:Class="Dis_1.EditProfile"
              Title="EditProfile">
 
+
+    <!-- Добавление кнопки назад в верхний правый угол -->
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Назад"
+                     IconImageSource="back2.png"
+                     Order="Primary"
+                     Priority="0"
+                     Clicked="OnBackButtonClicked" />
+    </ContentPage.ToolbarItems>
+
+
     <ScrollView>
         <VerticalStackLayout Padding="20">
 
@@ -59,7 +70,8 @@
                     TextColor="White"
                     CornerRadius="10"
                     HeightRequest="50"
-                    Margin="0,20,0,20"/>
+                    Margin="0,20,0,20"
+                    Clicked="OnSaveChanges"/>
 
             <!-- Добавление автомобиля -->
             <Frame CornerRadius="20"

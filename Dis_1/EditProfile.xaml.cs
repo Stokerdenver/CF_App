@@ -14,5 +14,14 @@ public partial class EditProfile : ContentPage
 
     private void OnAddCarButtonClicked(object sender, EventArgs e)
     { }
-       
+    private void OnSaveChanges(object sender, EventArgs e)
+    {
+        Application.Current.MainPage = new AppShell();
+    }
+    private void OnBackButtonClicked(object sender, EventArgs e)
+    {
+        Application.Current.MainPage = new AppShell();
+    }
+
+
 }

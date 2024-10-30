@@ -43,4 +43,8 @@ public partial class Profile1 : ContentPage
         return user;       
         
     }
+    private void EditProfileButton(object sender, EventArgs e)
+    {
+        Application.Current.MainPage = new EditProfile();
+    }
 }

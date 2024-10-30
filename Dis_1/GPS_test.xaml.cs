@@ -1,20 +1,26 @@
 namespace Dis_1;
+
+using Amazon.Runtime;
+using Amazon.S3;
+using Amazon.S3.Transfer;
 using Dis_1.Model;
+using Plugin.Permissions;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
 
 public partial class GPS_test : ContentPage
 {
-    private bool _isRunning; // Флаг для контроля выполнения
+
     public GPS_test()
 	{
 		InitializeComponent();
-       
+
+      
+
     }
 
-    // public LocationData test1;
-
+    private bool _isRunning; // Флаг для контроля выполнения
     public string data_GPS;
     public double longitudeToDb;
     public double latitudeToDb;
@@ -22,7 +28,8 @@ public partial class GPS_test : ContentPage
     public string username = Preferences.Get("UserLogin", string.Empty);
     public bool isleader = true;
 
-    async void StartLocationUpdates()
+    
+    async Task StartLocationUpdates()
     {
         try
         {
@@ -130,19 +137,20 @@ public partial class GPS_test : ContentPage
         await Task.Delay(2000);
     }
 
-
-
-
-
     private async void Start_SendingData(object sender, EventArgs e)
     {
 
         _isRunning = true;
-        StartLocationUpdates();
+
+        await StartLocationUpdates();
+        
     }
 
     private async void Stop_SendingData(object sender, EventArgs e)
     {
         _isRunning = false;
+        gpsLabel.Text = "";
+        testLabel.Text = "";
+        speedLabel.Text = "";
     }
 }

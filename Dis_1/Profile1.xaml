@@ -34,27 +34,45 @@
             <HorizontalStackLayout Spacing="40">
                 <Frame CornerRadius="20" BackgroundColor="#C6A9F5" Padding="10" WidthRequest="185" HorizontalOptions="Start">
                     <VerticalStackLayout>
-                        <Label Text="{Binding age}"
-                               FontAttributes="Bold"
-                               FontSize="Medium"
-                               TextColor="Black" />
-                        <Label Text="Стаж: 2 года"
-                               FontAttributes="Bold"
-                               FontSize="Medium"
-                               TextColor="Black" />
-                        <Label Text="Пол: М"
-                               FontAttributes="Bold"
-                               FontSize="Medium"
-                               TextColor="Black" />
+                        <Label>
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="Возраст: " FontSize="18" />
+                                    <Span Text="{Binding age}" FontSize="18" FontAttributes="Bold" />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+
+                        <Label>
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="Стаж: " FontSize="18" />
+                                    <Span Text="{Binding driving_exp}" FontSize="18" FontAttributes="Bold" />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+
+                        <Label>
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="Пол: " FontSize="18" />
+                                    <Span Text="{Binding sex}" FontSize="18" FontAttributes="Bold" />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
                     </VerticalStackLayout>
                 </Frame>
 
                 <!-- Информация о текущем автомобиле -->
                 <Frame CornerRadius="20" BackgroundColor="#C6A9F5" Padding="10" WidthRequest="150" HorizontalOptions="End">
-                    <Label Text="Текущий автомобиль: Л777OX77"
-                           FontAttributes="Bold"
-                           FontSize="Medium"
-                           TextColor="Black" />
+                    <Label>
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="Текущий автомобиль: " FontSize="18" />
+                                <Span Text="{Binding reg_number}" FontSize="18" FontAttributes="Bold" />
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
                 </Frame>
             </HorizontalStackLayout>
 
@@ -81,7 +99,8 @@
                     TextColor="White"
                     CornerRadius="10"
                     HeightRequest="50"
-                    Margin="0,20,0,0"/>
+                    Margin="0,20,0,0"
+                    Clicked="EditProfileButton"/>
 
         </VerticalStackLayout>
     </ScrollView>
