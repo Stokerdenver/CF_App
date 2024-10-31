@@ -20,6 +20,13 @@
                     CornerRadius="20"
                     HorizontalOptions="FillAndExpand"
                     Clicked="OnLoginConfirmClicked"/>
+        
+        <Button Text="Назад"
+            BackgroundColor="#2196F3"
+            TextColor="White"
+            CornerRadius="20"
+            HorizontalOptions="FillAndExpand"
+            Clicked="OnBackStepClicked"/>
 
     </VerticalStackLayout>
 </ContentPage>

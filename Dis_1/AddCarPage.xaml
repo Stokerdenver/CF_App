@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Dis_1.AddCarPage"
+             Title="AddCarPage">
+    <ScrollView>
+        <VerticalStackLayout Padding="20">
+            <!-- Добавление автомобиля -->
+        <Frame CornerRadius="20"
+     BackgroundColor="#C6A9F5"
+     Padding="20">
+            <VerticalStackLayout>
+
+                <!-- Заголовок для добавления автомобиля -->
+                <Label Text="Добавить автомобиль"
+             FontAttributes="Bold"
+             FontSize="Medium"
+             TextColor="Black"
+             HorizontalOptions="Start" />
+
+                <!-- Номер автомобиля -->
+                <Label Text="Номер:"
+             FontAttributes="Bold"
+             FontSize="Medium"
+             TextColor="Black"
+             Margin="0,10,0,0" />
+                <Entry x:Name = "RegNumberEntry" Placeholder="Введите номер автомобиля" />
+
+                <!-- Модель автомобиля -->
+                <Label Text="Модель:"
+             FontAttributes="Bold"
+             FontSize="Medium"
+             TextColor="Black"
+             Margin="0,10,0,0" />
+                <Entry x:Name = "ModelEntry" Placeholder="Введите модель автомобиля" />
+
+                <Label Text="Год выпуска:"
+             FontAttributes="Bold"
+             FontSize="Medium"
+             TextColor="Black"
+             Margin="0,10,0,0" />
+                <Entry x:Name = "YearEntry" Placeholder="Введите год выпуска" />
+
+                    <!-- Кнопка Добавить авто -->
+                    <Button Text="Добавить"
+                            Clicked="OnAddCarClicked"
+                            BackgroundColor="Black"
+                            TextColor="White"
+                            CornerRadius="10"
+                            HeightRequest="50"
+                            Margin="0,20,0,0"/>
+            
+                    <!-- Кнопка Назад -->
+                    <Button Text="Назад"
+                             Clicked="OnGoToShellClicked"
+                             BackgroundColor="Black"
+                             TextColor="White"
+                             CornerRadius="10"
+                             HeightRequest="50"
+                             Margin="0,20,0,0"/>
+                </VerticalStackLayout>
+            </Frame>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

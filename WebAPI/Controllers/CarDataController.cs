@@ -23,13 +23,13 @@
         {
             if (car == null)
                 return BadRequest();
-            
 
+            //car.User = null;
             // Добавляем авто в базу данных
             _context.car.Add(car);
             await _context.SaveChangesAsync();
 
-            return Ok("User registered successfully.");
+            return Ok("Car added successfully.");
         }
     }
 }

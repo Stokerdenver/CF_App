@@ -9,6 +9,10 @@ public partial class LoginPage : ContentPage
 		InitializeComponent();
 	}
 
+    private async void OnBackStepClicked(object sender, EventArgs e)
+    {
+        Application.Current.MainPage = new HelloPage();
+    }
     private async void OnLoginConfirmClicked(object sender, EventArgs e)
     {
 

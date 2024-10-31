@@ -4,6 +4,7 @@ using Amazon.Runtime;
 using Amazon.S3;
 using Amazon.S3.Transfer;
 using Dis_1.Model;
+using Newtonsoft.Json;
 using Plugin.Permissions;
 using System.Text;
 using System.Text.Json;
@@ -11,13 +12,13 @@ using System.Threading;
 
 public partial class GPS_test : ContentPage
 {
-
+    public string UserName { get; set; }
+    public UserC user;
     public GPS_test()
 	{
 		InitializeComponent();
-
-      
-
+        UserName = Preferences.Get("UserLogin", string.Empty);
+        GetUser12();
     }
 
     private bool _isRunning; // Флаг для контроля выполнения
@@ -25,10 +26,23 @@ public partial class GPS_test : ContentPage
     public double longitudeToDb;
     public double latitudeToDb;
     public int speedToDb;
-    public string username = Preferences.Get("UserLogin", string.Empty);
     public bool isleader = true;
 
-    
+    public async void GetUser12()
+    {
+        user = await GetUserDataFromServer(UserName);
+
+    }
+    public async Task<UserC> GetUserDataFromServer(string userName)
+    {
+        var client = new HttpClient();
+        var response = await client.GetStringAsync($"http://10.0.2.2:5000/api/User/{userName}");
+        var user = JsonConvert.DeserializeObject<UserC>(response);
+        return user;
+
+    }
+
+
     async Task StartLocationUpdates()
     {
         try
@@ -97,6 +111,17 @@ public partial class GPS_test : ContentPage
     {
         try
         {
+            var defaultCar = user.Cars.FirstOrDefault();
+
+            var current_car = defaultCar.model;
+
+
+            if (CurrentCar.SelectedCar != null)
+            {
+                current_car = CurrentCar.SelectedCar.model;
+            }
+
+            
             // если на сериализацию отдавать просто стринг - не рабоает
             // нужен объект вар типа и в атрибут этого объекта класть инфу
             var data = new
@@ -104,12 +129,12 @@ public partial class GPS_test : ContentPage
                 longitude = longitudeToDb,
                 latitude = latitudeToDb,
                 speed = speedToDb,
-                username = username,
-                isleader = isleader
-               
+                username = UserName,
+                isleader = isleader,
+                current_car = current_car
             };
             var client = new HttpClient();
-            var jsonData = JsonSerializer.Serialize(data);
+            var jsonData = System.Text.Json.JsonSerializer.Serialize(data);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
             await client.PostAsync("http://10.0.2.2:5000/api/MainData", content);
         }
@@ -126,12 +151,12 @@ public partial class GPS_test : ContentPage
         {
             longitude = longitudeToDb,
             latitude = latitudeToDb,
-            username = username,
+            username = UserName,
             isleader = isleader
 
         };
         var client = new HttpClient();
-        var jsonData = JsonSerializer.Serialize(wdata);
+        var jsonData = System.Text.Json.JsonSerializer.Serialize(wdata);
         var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
         await client.PostAsync("http://10.0.2.2:5000/api/Weather", content);
         await Task.Delay(2000);

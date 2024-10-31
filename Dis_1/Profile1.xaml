@@ -91,10 +91,22 @@
                    TextColor="Black" />
 
             <Picker Title="Выберете автомобиль" 
+                    x:Name="CarPicker"
+                    SelectedIndexChanged="OnCarSelected"
                     HorizontalOptions="FillAndExpand" />
 
+            <!-- Кнопка "Добавить автомобиль" -->
+            <Button Text="Добавить автомобиль"
+                     BackgroundColor="Black"
+                     TextColor="White"
+                     CornerRadius="10"
+                     HeightRequest="50"
+                     Margin="0,20,0,0"
+                     Clicked="AddCarButton"/>
+
+
             <!-- Кнопка "Редактировать" -->
-            <Button Text="Редактировать"
+            <Button Text="Редактировать профиль"
                     BackgroundColor="Black"
                     TextColor="White"
                     CornerRadius="10"

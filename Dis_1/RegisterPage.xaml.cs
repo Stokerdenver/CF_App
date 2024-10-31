@@ -1,5 +1,8 @@
 using System.Text.Json;
 using System.Text;
+using Dis_1.Model;
+using Newtonsoft.Json;
+
 
 namespace Dis_1;
 
@@ -24,11 +27,7 @@ public partial class RegisterPage : ContentPage
         }
     }
 
-    private int GetId()
-    {
-        int id = 7;
-        return id++;
-    }
+    
 
     private async void OnRegisterClicked(object sender, EventArgs e)
     {
@@ -40,7 +39,7 @@ public partial class RegisterPage : ContentPage
         var regNumber = RegNumberEntry.Text;
         var model = ModelEntry.Text;
         var rel_year = YearEntry.Text;
-        var user_id = GetId();
+       
 
         // ¬алидируем данные (например, чтобы пол€ не были пустыми)
         if (string.IsNullOrWhiteSpace(name) ||
@@ -68,11 +67,13 @@ public partial class RegisterPage : ContentPage
         {
             reg_number = regNumber,
             model = model,
-            release_year = rel_year
-            
+            release_year = rel_year,
+
         };
 
+
         await RegisterUserAsync(userData);
+
         await AddCarAsync(carData);
 
         // ѕосле успешной регистрации сохран€ем информацию в Preferences
@@ -85,7 +86,7 @@ public partial class RegisterPage : ContentPage
     public async Task RegisterUserAsync(object userData)
     {  
             var client = new HttpClient();
-            var json = JsonSerializer.Serialize(userData);
+            var json = System.Text.Json.JsonSerializer.Serialize(userData);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await client.PostAsync("http://10.0.2.2:5000/api/User", content);
 
@@ -94,8 +95,11 @@ public partial class RegisterPage : ContentPage
     public async Task AddCarAsync(object carData)
     {
         var client = new HttpClient();
-        var json = JsonSerializer.Serialize(carData);
+        var json = System.Text.Json.JsonSerializer.Serialize(carData);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
         var response = await client.PostAsync("http://10.0.2.2:5000/api/CarData", content);
     }
+
+    
+
 }

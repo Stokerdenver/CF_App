@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dis_1.Model
 {
-    class UserC
+    public class UserC
     {
         public int id { get; set; }
         public string name { get; set; }
