@@ -22,12 +22,23 @@ public partial class Profile1 : ContentPage
         // Пример запроса к вашему Web API
         var user = await GetUserDataFromServer(UserName);
 
+
+        TestLabel.Text = "Тест Объекта";
+
+        foreach (var car in user.Cars)
+        {
+            TestLabel.Text += Convert.ToString(car);
+        }
+
+         
+
         //await DisplayAlert("Внимание", "Метод отработал", "ОК");
 
         if (user != null)
         {
             // Привязка данных к интерфейсу
             this.BindingContext = user;
+            
         }
         else
         {
@@ -43,6 +54,7 @@ public partial class Profile1 : ContentPage
         return user;       
         
     }
+
     private void EditProfileButton(object sender, EventArgs e)
     {
         Application.Current.MainPage = new EditProfile();

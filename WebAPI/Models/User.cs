@@ -10,7 +10,8 @@ namespace WebAPI.Models
         public string sex { get; set; }
         public int age { get; set; }
         public int driving_exp { get; set; }
-        public string reg_number {  get; set; }
-        public string f_carModel { get; set; }
+
+        // Связь "один ко многим" - один пользователь может иметь много автомобилей
+        public ICollection<Car> Cars { get; set; } = new List<Car>();
     }
 }

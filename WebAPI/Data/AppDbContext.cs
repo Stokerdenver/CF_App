@@ -14,5 +14,14 @@
         public DbSet<WeatherData> weather_data { get; set; }
         public DbSet<ClientDistance> client_distance { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Cars)
+                .WithOne(c => c.User)
+                .HasForeignKey(c => c.user_id);
+        }
+
+
     }
 }

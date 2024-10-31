@@ -43,6 +43,7 @@
         {
             // Получение данных пользователя из базы данных
             var user = await _context.user
+                .Include(u => u.Cars) // Включение связанных автомобилей
                 .FirstOrDefaultAsync(u => u.name == userName);
 
             if (user == null)
