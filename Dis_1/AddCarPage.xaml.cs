@@ -63,13 +63,13 @@ public partial class AddCarPage : ContentPage
         var client = new HttpClient();
         var json = System.Text.Json.JsonSerializer.Serialize(carData);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
-        var response = await client.PostAsync("http://10.0.2.2:5000/api/CarData", content);
+        var response = await client.PostAsync("http://45.84.225.138:80/api/CarData", content);
     }
 
     public async Task<UserC> GetUserDataFromServer(string userName)
     {
         var client = new HttpClient();
-        var response = await client.GetStringAsync($"http://10.0.2.2:5000/api/User/{userName}");
+        var response = await client.GetStringAsync($"http://45.84.225.138:80/api/User/{userName}");
         var user = JsonConvert.DeserializeObject<UserC>(response);
         return user;
 

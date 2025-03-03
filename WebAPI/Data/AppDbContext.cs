@@ -20,6 +20,11 @@
                 .HasMany(u => u.Cars)
                 .WithOne(c => c.User)
                 .HasForeignKey(c => c.user_id);
+
+            modelBuilder.Entity<ClientDistance>()
+                .Property(c => c.id)
+                .ValueGeneratedOnAdd();
+
         }
 
 

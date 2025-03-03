@@ -88,7 +88,7 @@ public partial class RegisterPage : ContentPage
             var client = new HttpClient();
             var json = System.Text.Json.JsonSerializer.Serialize(userData);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await client.PostAsync("http://10.0.2.2:5000/api/User", content);
+            var response = await client.PostAsync("http://45.84.225.138:80/api/User", content);
 
     }
 
@@ -97,7 +97,7 @@ public partial class RegisterPage : ContentPage
         var client = new HttpClient();
         var json = System.Text.Json.JsonSerializer.Serialize(carData);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
-        var response = await client.PostAsync("http://10.0.2.2:5000/api/CarData", content);
+        var response = await client.PostAsync("http://45.84.225.138:80/api/CarData", content);
     }
 
     

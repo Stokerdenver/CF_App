@@ -56,7 +56,7 @@ public partial class LoginPage : ContentPage
         {
             try
             {
-                var response = await client.GetAsync($"http://10.0.2.2:5000/api/User/{username}");
+                var response = await client.GetAsync($"http://45.84.225.138:80/api/User/{username}");
 
                 // Если ответ успешный (код 200), возвращаем true
                 if (response.IsSuccessStatusCode)

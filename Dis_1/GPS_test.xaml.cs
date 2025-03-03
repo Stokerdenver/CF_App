@@ -5,7 +5,6 @@ using Amazon.S3;
 using Amazon.S3.Transfer;
 using Dis_1.Model;
 using Newtonsoft.Json;
-using Plugin.Permissions;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
@@ -14,96 +13,111 @@ public partial class GPS_test : ContentPage
 {
     public string UserName { get; set; }
     public UserC user;
+    // Используем единый экземпляр HttpClient для всего класса
+    private static readonly HttpClient httpClient = new HttpClient();
+
     public GPS_test()
-	{
-		InitializeComponent();
+    {
+        InitializeComponent();
         UserName = Preferences.Get("UserLogin", string.Empty);
-        GetUser12();
+        // Инициализация пользователя в фоновом режиме
+        _ = InitializeUserDataAsync();
     }
 
-    private bool _isRunning; // Флаг для контроля выполнения
+    private bool _isRunning; // Можно использовать для логики UI, если нужно
     public string data_GPS;
     public double longitudeToDb;
     public double latitudeToDb;
     public int speedToDb;
     public bool isleader = true;
 
-    public async void GetUser12()
+    // Асинхронная инициализация данных пользователя
+    private async Task InitializeUserDataAsync()
     {
         user = await GetUserDataFromServer(UserName);
-
     }
+
     public async Task<UserC> GetUserDataFromServer(string userName)
     {
-        var client = new HttpClient();
-        var response = await client.GetStringAsync($"http://10.0.2.2:5000/api/User/{userName}");
-        var user = JsonConvert.DeserializeObject<UserC>(response);
-        return user;
-
+        try
+        {
+            var response = await httpClient.GetStringAsync($"http://45.84.225.138:80/api/User/{userName}");
+            var user = JsonConvert.DeserializeObject<UserC>(response);
+            return user;
+        }
+        catch (Exception ex)
+        {
+            gpsLabel.Text = $"Error getting user data: {ex.Message}";
+            return null;
+        }
     }
 
-
-    async Task StartLocationUpdates()
+    // Метод для запуска обновлений с использованием CancellationToken
+    async Task StartLocationUpdatesAsync(CancellationToken cancellationToken)
     {
         try
         {
             // Запрос разрешений на доступ к местоположению
             var status = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
-
             if (status != PermissionStatus.Granted)
             {
-                // Если разрешения не предоставлены, выводим сообщение
                 gpsLabel.Text = "Location permission denied.";
                 return;
             }
-            
-            // Запуск асинхронного процесса обновления и отправки данных
-            await UpdateAndSendDataAsync();
+
+            // Запуск параллельного обновления погоды (раз в час)
+            _ = Task.Run(async () =>
+            {
+                while (!cancellationToken.IsCancellationRequested)
+                {
+                    try
+                    {
+                        await SendWeatherAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        // Здесь можно логировать ошибку, если нужно
+                    }
+                    await Task.Delay(TimeSpan.FromHours(1), cancellationToken);
+                }
+            }, cancellationToken);
+
+            // Основной цикл обновления местоположения
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                try
+                {
+                    // Получение текущего местоположения с увеличенным таймаутом (10 секунд)
+                    var location = await Geolocation.GetLocationAsync(new GeolocationRequest(GeolocationAccuracy.Best, TimeSpan.FromSeconds(1)));
+                    if (location != null)
+                    {
+                        // Преобразуем скорость из м/с в км/ч
+                        double speedMps = location.Speed.HasValue ? location.Speed.Value : 0;
+                        double speedKmh = speedMps * 3.6;
+
+                        gpsLabel.Text = $"Текущие координаты: {location.Latitude}, {location.Longitude}";
+                        speedLabel.Text = $"Скорость: {Math.Round(speedKmh, 1)} км/ч";
+                        data_GPS = $"{speedKmh} {location.Latitude} {location.Longitude}";
+
+                        longitudeToDb = location.Longitude;
+                        latitudeToDb = location.Latitude;
+                        speedToDb = Convert.ToInt32(speedKmh);
+
+                        // Отправка данных на сервер (fire-and-forget, чтобы не блокировать цикл)
+                        _ = SendDataToServerAsync();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    gpsLabel.Text = $"Error: {ex.Message}";
+                }
+                // Задержка в 1 секунду между обновлениями
+                await Task.Delay(1000, cancellationToken);
+            }
         }
         catch (Exception ex)
         {
-            gpsLabel.Text = $"Error: {ex.Message}";
-        }
-    }
-
-    async Task UpdateAndSendDataAsync()
-    {
-        while (_isRunning)
-        {
-            try
-            {
-                // Получение текущего местоположения
-                var location = await Geolocation.GetLocationAsync(new GeolocationRequest(GeolocationAccuracy.Best, TimeSpan.FromSeconds(1)));
-
-                if (location != null)
-                {
-                    // Если скорость равна 0, выводим "0"
-                    double speed = location.Speed.HasValue ? location.Speed.Value : 0;
-                    gpsLabel.Text = $"GPS Coordinates: {location.Latitude}, {location.Longitude}";
-                    speedLabel.Text = $"Speed: {speed} m/s";
-                    data_GPS = Convert.ToString(speed) + " " + Convert.ToString(location.Latitude) + " " + Convert.ToString(location.Longitude);
-
-                   // проверяем то, что отправляем в бд
-                   testLabel.Text = data_GPS;
-
-                    longitudeToDb = Convert.ToDouble(location.Longitude);
-                    latitudeToDb = Convert.ToDouble(location.Latitude);
-                    speedToDb = Convert.ToInt32(location.Speed);
-
-
-                    // Отправка данных на сервер
-                    await SendDataToServerAsync();
-                }
-            }
-            catch (Exception ex)
-            {
-                gpsLabel.Text = $"Error: {ex.Message}";
-            }
-
-
-
-            // Задержка в 1 секунду перед следующим обновлением
-            await Task.Delay(1000);
+            gpsLabel.Text = $"Error in location updates: {ex.Message}";
         }
     }
 
@@ -111,19 +125,17 @@ public partial class GPS_test : ContentPage
     {
         try
         {
-            var defaultCar = user.Cars.FirstOrDefault();
-
-            var current_car = defaultCar.model;
-
-
+            string current_car = string.Empty;
+            if (user != null && user.Cars != null && user.Cars.Any())
+            {
+                var defaultCar = user.Cars.FirstOrDefault();
+                current_car = defaultCar?.model;
+            }
             if (CurrentCar.SelectedCar != null)
             {
                 current_car = CurrentCar.SelectedCar.model;
             }
 
-            
-            // если на сериализацию отдавать просто стринг - не рабоает
-            // нужен объект вар типа и в атрибут этого объекта класть инфу
             var data = new
             {
                 longitude = longitudeToDb,
@@ -133,47 +145,50 @@ public partial class GPS_test : ContentPage
                 isleader = isleader,
                 current_car = current_car
             };
-            var client = new HttpClient();
+
             var jsonData = System.Text.Json.JsonSerializer.Serialize(data);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            await client.PostAsync("http://10.0.2.2:5000/api/MainData", content);
+            await httpClient.PostAsync("http://45.84.225.138:80/api/MainData", content);
         }
         catch (Exception ex)
         {
             gpsLabel.Text = $"Failed to send data: {ex.Message}";
         }
-        await SendWeatherAsync();
     }
 
+    // Отправка данных о погоде (без задержки внутри метода)
     public async Task SendWeatherAsync()
     {
-        var wdata = new
+        try
         {
-            longitude = longitudeToDb,
-            latitude = latitudeToDb,
-            username = UserName,
-            isleader = isleader
-
-        };
-        var client = new HttpClient();
-        var jsonData = System.Text.Json.JsonSerializer.Serialize(wdata);
-        var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-        await client.PostAsync("http://10.0.2.2:5000/api/Weather", content);
-        await Task.Delay(2000);
+            var wdata = new
+            {
+                longitude = longitudeToDb,
+                latitude = latitudeToDb,
+                username = UserName,
+                isleader = isleader
+            };
+            var jsonData = System.Text.Json.JsonSerializer.Serialize(wdata);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            await httpClient.PostAsync("http://45.84.225.138:80/api/Weather", content);
+        }
+        catch (Exception ex)
+        {
+            gpsLabel.Text = $"Failed to send weather data: {ex.Message}";
+        }
     }
+
+    CancellationTokenSource cts;
 
     private async void Start_SendingData(object sender, EventArgs e)
     {
-
-        _isRunning = true;
-
-        await StartLocationUpdates();
-        
+        cts = new CancellationTokenSource();
+        await StartLocationUpdatesAsync(cts.Token);
     }
 
-    private async void Stop_SendingData(object sender, EventArgs e)
+    private void Stop_SendingData(object sender, EventArgs e)
     {
-        _isRunning = false;
+        cts?.Cancel();
         gpsLabel.Text = "";
         testLabel.Text = "";
         speedLabel.Text = "";

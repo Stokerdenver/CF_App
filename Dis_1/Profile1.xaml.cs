@@ -88,13 +88,14 @@ public partial class Profile1 : ContentPage
                             $"Модель: {selectedCar.model}\n" +
                             $"Год выпуска: {selectedCar.release_year}";
         }
+        this.BindingContext = user;
     }
 
 
     public async Task<UserC> GetUserDataFromServer(string userName)
     {
         var client = new HttpClient();
-        var response = await client.GetStringAsync($"http://10.0.2.2:5000/api/User/{userName}");
+        var response = await client.GetStringAsync($"http://45.84.225.138:80/api/User/{userName}");
         var user = JsonConvert.DeserializeObject<UserC>(response);
         return user;
         
