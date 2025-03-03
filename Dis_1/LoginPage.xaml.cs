@@ -9,6 +9,10 @@ public partial class LoginPage : ContentPage
 		InitializeComponent();
 	}
 
+    private async void OnBackStepClicked(object sender, EventArgs e)
+    {
+        Application.Current.MainPage = new HelloPage();
+    }
     private async void OnLoginConfirmClicked(object sender, EventArgs e)
     {
 
@@ -29,11 +33,7 @@ public partial class LoginPage : ContentPage
         if (userExists)
         {
 
-            // Отправляем сообщение
-            //  MessagingCenter.Send(this, "UserLoggedIn");
-          /*  var profilePage = new Profile1(username);
-            profilePage.LoadUserData();
-          */ 
+            
             // Если пользователь найден, переходим на главную страницу
             Application.Current.MainPage = new AppShell();
 
@@ -52,18 +52,37 @@ public partial class LoginPage : ContentPage
     // Метод для проверки наличия пользователя через запрос к API
     private async Task<bool> CheckUserExists(string username)
     {
-        // Пример запроса к вашему WebAPI
         using (var client = new HttpClient())
         {
-            var response = await client.GetStringAsync($"http://10.0.2.2:5000/api/User/{username}");
-            if (response != null)
+            try
             {
-                return true;
+                var response = await client.GetAsync($"http://45.84.225.138:80/api/User/{username}");
+
+                // Если ответ успешный (код 200), возвращаем true
+                if (response.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+
+                // Если получен код 404, возвращаем false (пользователь не найден)
+                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    return false;
+                }
+
+                // Если код ответа отличается от 200 и 404, выбрасываем исключение
+                response.EnsureSuccessStatusCode();
             }
-            else
+            catch (HttpRequestException ex)
             {
-                return false;
+                await DisplayAlert("Ошибка", $"Не удалось выполнить запрос: {ex.Message}", "ОК");
             }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Ошибка", $"Произошла ошибка: {ex.Message}", "ОК");
+            }
+
+            return false;
         }
     }
 }

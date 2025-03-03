@@ -78,7 +78,7 @@
 
             <!-- Модель автомобиля -->
             <Frame CornerRadius="20" BackgroundColor="#C6A9F5" Padding="10" Margin="0,20,0,10">
-                <Label Text="{Binding f_carModel}"
+                <Label Text="{Binding model}"
                        FontAttributes="Bold"
                        FontSize="Medium"
                        TextColor="Black" />
@@ -91,10 +91,22 @@
                    TextColor="Black" />
 
             <Picker Title="Выберете автомобиль" 
+                    x:Name="CarPicker"
+                    SelectedIndexChanged="OnCarSelected"
                     HorizontalOptions="FillAndExpand" />
 
+            <!-- Кнопка "Добавить автомобиль" -->
+            <Button Text="Добавить автомобиль"
+                     BackgroundColor="Black"
+                     TextColor="White"
+                     CornerRadius="10"
+                     HeightRequest="50"
+                     Margin="0,20,0,0"
+                     Clicked="AddCarButton"/>
+
+
             <!-- Кнопка "Редактировать" -->
-            <Button Text="Редактировать"
+            <Button Text="Редактировать профиль"
                     BackgroundColor="Black"
                     TextColor="White"
                     CornerRadius="10"
@@ -102,6 +114,12 @@
                     Margin="0,20,0,0"
                     Clicked="EditProfileButton"/>
 
+            <Label 
+                x:Name="TestLabel"
+                Text=""
+                FontAttributes="Bold"
+                FontSize="Medium"
+                TextColor="Black" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

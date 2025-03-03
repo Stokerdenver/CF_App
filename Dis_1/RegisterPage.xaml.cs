@@ -1,5 +1,8 @@
 using System.Text.Json;
 using System.Text;
+using Dis_1.Model;
+using Newtonsoft.Json;
+
 
 namespace Dis_1;
 
@@ -24,6 +27,7 @@ public partial class RegisterPage : ContentPage
         }
     }
 
+    
 
     private async void OnRegisterClicked(object sender, EventArgs e)
     {
@@ -34,6 +38,8 @@ public partial class RegisterPage : ContentPage
         var age = AgeEntry.Text;
         var regNumber = RegNumberEntry.Text;
         var model = ModelEntry.Text;
+        var rel_year = YearEntry.Text;
+       
 
         // Валидируем данные (например, чтобы поля не были пустыми)
         if (string.IsNullOrWhiteSpace(name) ||
@@ -41,6 +47,7 @@ public partial class RegisterPage : ContentPage
             string.IsNullOrWhiteSpace(age) ||
             string.IsNullOrWhiteSpace(regNumber) ||
             string.IsNullOrWhiteSpace(model) ||
+            string.IsNullOrWhiteSpace(rel_year) ||
             string.IsNullOrWhiteSpace(selectedGender))
         {
             await DisplayAlert("Ошибка", "Все поля должны быть заполнены.", "ОК");
@@ -48,16 +55,26 @@ public partial class RegisterPage : ContentPage
         }
 
         var userData = new
-        {
+        {   
+           
             name = name,
             driving_exp = experience,
             age = age,
-            reg_number = regNumber,
-            f_carModel = model,
             sex = selectedGender
         };
 
+        var carData = new
+        {
+            reg_number = regNumber,
+            model = model,
+            release_year = rel_year,
+
+        };
+
+
         await RegisterUserAsync(userData);
+
+        await AddCarAsync(carData);
 
         // После успешной регистрации сохраняем информацию в Preferences
         Preferences.Set("IsRegistered", true);
@@ -69,9 +86,20 @@ public partial class RegisterPage : ContentPage
     public async Task RegisterUserAsync(object userData)
     {  
             var client = new HttpClient();
-            var json = JsonSerializer.Serialize(userData);
+            var json = System.Text.Json.JsonSerializer.Serialize(userData);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await client.PostAsync("http://10.0.2.2:5000/api/User", content);
+            var response = await client.PostAsync("http://45.84.225.138:80/api/User", content);
 
     }
+
+    public async Task AddCarAsync(object carData)
+    {
+        var client = new HttpClient();
+        var json = System.Text.Json.JsonSerializer.Serialize(carData);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var response = await client.PostAsync("http://45.84.225.138:80/api/CarData", content);
+    }
+
+    
+
 }

@@ -12,6 +12,7 @@ namespace WebAPI.Models
         public DateTime timestamp { get; set; }
         public string username { get; set; }
         public bool isleader { get; set; }
+        public string? current_car{ get; set; }
 
 
     }
