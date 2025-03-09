@@ -65,11 +65,11 @@
 
                 <!-- Информация о текущем автомобиле -->
                 <Frame CornerRadius="20" BackgroundColor="#C6A9F5" Padding="10" WidthRequest="150" HorizontalOptions="End">
-                    <Label>
+                    <Label x:Name="regNumberLabel"> 
                         <Label.FormattedText>
                             <FormattedString>
                                 <Span Text="Текущий автомобиль: " FontSize="18" />
-                                <Span Text="{Binding reg_number}" FontSize="18" FontAttributes="Bold" />
+                                <Span Text="" FontSize="18" FontAttributes="Bold" />
                             </FormattedString>
                         </Label.FormattedText>
                     </Label>
@@ -78,7 +78,8 @@
 
             <!-- Модель автомобиля -->
             <Frame CornerRadius="20" BackgroundColor="#C6A9F5" Padding="10" Margin="0,20,0,10">
-                <Label Text="{Binding model}"
+                <Label x:Name="modelLabel"
+                       Text=""
                        FontAttributes="Bold"
                        FontSize="Medium"
                        TextColor="Black" />
