@@ -81,7 +81,9 @@ public partial class Profile1 : ContentPage
             CurrentCar.SelectedCar = selectedCar;
 
             // Устанавливаем BindingContext для элементов отображения данных автомобиля
-            BindingContext = selectedCar;
+            //this.BindingContext = selectedCar;
+            regNumberLabel.Text = selectedCar.reg_number;
+            modelLabel.Text = selectedCar.model;
 
             // Отображаем данные о выбранной машине
             TestLabel.Text = $"Рег. номер: {selectedCar.reg_number}\n" +
