@@ -30,6 +30,7 @@ public partial class GPS_test : ContentPage
     public double longitudeToDb;
     public double latitudeToDb;
     public int speedToDb;
+    public double bearingToDb; // Поле для направления движения
     public bool isleader = true;
 
     // Флаг, контролирующий, подписаны ли мы уже на события (чтобы не подписываться повторно)
@@ -38,7 +39,7 @@ public partial class GPS_test : ContentPage
     // Для управления циклом отправки данных о погоде
     private CancellationTokenSource ctsWeather;
 
-    // 1. Получаем данные пользователя (как и прежде)
+    // 1. Получаем данные пользователя
     private async Task InitializeUserDataAsync()
     {
         user = await GetUserDataFromServer(UserName);
@@ -83,13 +84,12 @@ public partial class GPS_test : ContentPage
             locator.PositionChanged += OnPositionChanged;
             locator.PositionError += OnPositionError;
 
-            // Настраиваем прослушивание:
-            //  - интервал обновлений: 1 сек
-            //  - минимальное расстояние (в метрах) для триггера: 0
+            // Настраиваем прослушивание с включенным параметром heading
             await locator.StartListeningAsync(
                 TimeSpan.FromSeconds(1), // интервал
                 0,                       // дистанция (м)
-                includeHeading: false,
+                includeHeading: true,    // включаем получение направления 
+                                         // Heading возвращается в градусах от 0 до 360, где 0 - север
                 new ListenerSettings
                 {
                     // Можно настроить приоритет и другие параметры
@@ -108,7 +108,7 @@ public partial class GPS_test : ContentPage
         }
     }
 
-    // 3. Обработчик события PositionChanged
+    // 3. Обработчик события PositionChanged с получением heading
     private void OnPositionChanged(object sender, PositionEventArgs e)
     {
         try
@@ -121,12 +121,12 @@ public partial class GPS_test : ContentPage
             latitudeToDb = position.Latitude;
             longitudeToDb = position.Longitude;
 
+            // Получаем направление движения прямо из GPS
+            // Heading возвращается в градусах от 0 до 360, где 0 - север
+            bearingToDb = position.Heading;
 
-            // Скорость (м/с), переводим в км/ч (умножаем на 3.6)\
-
+            // Скорость (м/с), переводим в км/ч
             double speedMps = position.Speed;
-
-            // double speedMps = position.Speed;
             double speedKmh = speedMps * 3.6;
             speedToDb = Convert.ToInt32(speedKmh);
 
@@ -135,6 +135,11 @@ public partial class GPS_test : ContentPage
             {
                 gpsLabel.Text = $"Текущие координаты: {position.Latitude}, {position.Longitude}";
                 speedLabel.Text = $"Скорость: {Math.Round(speedKmh, 3)} км/ч";
+                // Можно добавить новый label для отображения направления
+                if (headingLabel != null) // Если добавили такой label
+                {
+                    headingLabel.Text = $"Направление: {Math.Round(bearingToDb, 1)}°";
+                }
             });
 
             // Отправляем данные на сервер (fire-and-forget, чтобы не блокировать событие)
@@ -160,7 +165,7 @@ public partial class GPS_test : ContentPage
         });
     }
 
-    // 5. Метод отправки данных о погоде раз в час (опционально, как у вас было)
+    // 5. Метод отправки данных о погоде раз в час 
     private async Task StartWeatherUpdates(CancellationToken cancellationToken)
     {
         while (!cancellationToken.IsCancellationRequested)
@@ -212,9 +217,13 @@ public partial class GPS_test : ContentPage
         gpsLabel.Text = "";
         testLabel.Text = "";
         speedLabel.Text = "";
+        if (headingLabel != null) // Если добавили такой label
+        {
+            headingLabel.Text = "";
+        }
     }
 
-    // 7. Отправка данных на сервер (останется похожей на вашу)
+    // 7. Отправка данных на сервер (добавили bearing)
     public async Task SendDataToServerAsync()
     {
         try
@@ -237,12 +246,13 @@ public partial class GPS_test : ContentPage
                 speed = speedToDb,
                 username = UserName,
                 isleader = isleader,
-                current_car = current_car
+                current_car = current_car,
+                bearing = bearingToDb  // Добавляем направление движения
             };
 
             var jsonData = System.Text.Json.JsonSerializer.Serialize(data);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            await httpClient.PostAsync("http://45.84.225.138:80/api/MainData", content);
+            await httpClient.PostAsync($"{AppSettings.ServerUrl}/api/MainData", content);
         }
         catch (Exception ex)
         {
@@ -253,7 +263,7 @@ public partial class GPS_test : ContentPage
         }
     }
 
-    // 8. Отправка данных о погоде (настраивается раз в час в StartWeatherUpdates)
+    // 8. Отправка данных о погоде (добавили bearing)
     public async Task SendWeatherAsync()
     {
         var wdata = new
@@ -261,10 +271,11 @@ public partial class GPS_test : ContentPage
             longitude = longitudeToDb,
             latitude = latitudeToDb,
             username = UserName,
-            isleader = isleader
+            isleader = isleader,
+            bearing = bearingToDb  // Добавляем направление
         };
         var jsonData = System.Text.Json.JsonSerializer.Serialize(wdata);
         var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-        await httpClient.PostAsync("http://45.84.225.138:80/api/Weather", content);
+        await httpClient.PostAsync($"{AppSettings.ServerUrl}/api/Weather", content);
     }
 }
