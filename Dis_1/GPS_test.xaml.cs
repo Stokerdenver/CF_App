@@ -215,12 +215,11 @@ public partial class GPS_test : ContentPage
         }
 
         gpsLabel.Text = "";
-        testLabel.Text = "";
         speedLabel.Text = "";
-        if (headingLabel != null) // Если добавили такой label
-        {
-            headingLabel.Text = "";
-        }
+        headingLabel.Text = "";
+        leaderStatusLabel.Text = "";
+
+
     }
 
     // 7. Отправка данных на сервер (добавили bearing)
@@ -252,7 +251,28 @@ public partial class GPS_test : ContentPage
 
             var jsonData = System.Text.Json.JsonSerializer.Serialize(data);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            await httpClient.PostAsync($"{AppSettings.ServerUrl}/api/MainData", content);
+            var response = await httpClient.PostAsync($"{AppSettings.ServerUrl}/api/MainData", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                // Получаем ответ с обновленными данными (включая поле isleader)
+                var result = await response.Content.ReadAsStringAsync();
+                var returnedData = System.Text.Json.JsonSerializer.Deserialize<MainData>(result);
+
+                // Обновляем UI: показываем статус "Лидер" или "Ведомый"
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    // Предполагаем, что у вас есть label leaderStatusLabel на странице
+                    leaderStatusLabel.Text = returnedData.isleader ? "Вы Лидер" : "Вы Ведомый";
+                });
+            }
+            else
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    gpsLabel.Text = "Ошибка при отправке данных";
+                });
+            }
         }
         catch (Exception ex)
         {
@@ -277,5 +297,10 @@ public partial class GPS_test : ContentPage
         var jsonData = System.Text.Json.JsonSerializer.Serialize(wdata);
         var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
         await httpClient.PostAsync($"{AppSettings.ServerUrl}/api/Weather", content);
+    }
+
+    private void Change_Server(object sender, EventArgs e)
+    {
+        //AppSettings.ServerUrl = "http://45.84.225.138:81";
     }
 }

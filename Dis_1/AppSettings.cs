@@ -8,7 +8,7 @@ namespace Dis_1
 {
     public static class AppSettings
     {
-        public static string ServerUrl { get; set; } = "http://45.84.225.138:80";
+        public static string ServerUrl { get; set; } = "http://10.0.2.2:5000";
 
     }
 }

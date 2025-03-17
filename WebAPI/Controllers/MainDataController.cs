@@ -50,10 +50,10 @@
 
             if (shouldCalculateDistance)
             {
-                // Получаем данные только тех пользователей, которые активны в последние 5 секунд
+                // Получаем данные только тех пользователей, которые активны в последние 4 секунд
                 var activeClients = await _context.main_data
                     .Where(md => md.username != mainData.username &&
-                           md.timestamp >= DateTime.UtcNow.AddSeconds(-4))
+                           md.timestamp >= DateTime.UtcNow.AddSeconds(-5))
                     .GroupBy(md => md.username)  // Группируем по имени пользователя
                     .Select(g => g.OrderByDescending(md => md.timestamp).First())  // Выбираем самую последнюю запись для каждого пользователя
                     .ToListAsync();
@@ -111,12 +111,10 @@
             if (bearingDiff > 180) bearingDiff = 360 - bearingDiff;
 
             // Автомобили на одной дороге, если они близко и движутся примерно в одном направлении
-            // (разница в направлении менее 30 градусов) или движутся в противоположных направлениях
-            // (разница около 180 градусов, ±15 градусов)
+            // (разница в направлении менее 30 градусов) 
             bool sameDirection = bearingDiff < 30;
-            bool oppositeDirection = bearingDiff > 165 && bearingDiff < 195;
-
-            return sameDirection || oppositeDirection;
+            
+            return sameDirection;
         }
 
         // Метод для определения лидера
@@ -197,7 +195,7 @@
 
             // Если разница меньше 90 градусов, то другой автомобиль находится впереди текущего
             // Если больше 90 градусов, то другой автомобиль находится позади текущего
-            return bearingDiff < 90;
+            return bearingDiff < 40;
         }
 
         // Метод для расчета направления от точки 1 к точке 2
