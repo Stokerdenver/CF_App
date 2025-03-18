@@ -55,41 +55,48 @@ public partial class RegisterPage : ContentPage
         }
 
         var userData = new
-        {   
-           
+        {
             name = name,
             driving_exp = experience,
             age = age,
             sex = selectedGender
         };
 
+        // Регистрируем пользователя и получаем его ID
+        var userId = await RegisterUserAsync(userData);
+        if (userId == null)
+        {
+            await DisplayAlert("Ошибка", "Не удалось зарегистрировать пользователя.", "ОК");
+            return;
+        }
+
         var carData = new
         {
             reg_number = regNumber,
             model = model,
             release_year = rel_year,
-
+            user_id = userId  // Добавляем ID пользователя
         };
-
-
-        await RegisterUserAsync(userData);
 
         await AddCarAsync(carData);
 
-        // После успешной регистрации сохраняем информацию в Preferences
         Preferences.Set("IsRegistered", true);
-
-        // Перенаправляем пользователя на главную страницу
         Application.Current.MainPage = new AppShell();
     }
 
-    public async Task RegisterUserAsync(object userData)
-    {  
-            var client = new HttpClient();
-            var json = System.Text.Json.JsonSerializer.Serialize(userData);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await client.PostAsync($"{AppSettings.ServerUrl}/api/User", content);
+    public async Task<int?> RegisterUserAsync(object userData)
+    {
+        var client = new HttpClient();
+        var json = System.Text.Json.JsonSerializer.Serialize(userData);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var response = await client.PostAsync($"{AppSettings.ServerUrl}/api/User", content);
 
+        if (!response.IsSuccessStatusCode)
+            return null;
+
+        // Получаем ID пользователя из ответа
+        var responseBody = await response.Content.ReadAsStringAsync();
+        return JsonConvert.DeserializeObject<int>(responseBody);
     }
 
     public async Task AddCarAsync(object carData)

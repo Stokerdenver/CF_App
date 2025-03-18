@@ -35,7 +35,7 @@
             _context.user.Add(user);
             await _context.SaveChangesAsync();
 
-            return Ok("User registered successfully.");
+            return Ok(user.id);
         }
 
         [HttpGet("{userName}")]
