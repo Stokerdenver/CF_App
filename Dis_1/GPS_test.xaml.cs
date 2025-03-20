@@ -16,7 +16,7 @@ public partial class GPS_test : ContentPage
     public string UserName { get; set; }
     public UserC user;
 
-    // HttpClient ��� �������� ������, ����� �� ��������� �� ������ ������
+    // HttpClient чтобы не создавать его постоянно в коде
     private static readonly HttpClient httpClient = new HttpClient();
 
     public GPS_test()
@@ -26,20 +26,20 @@ public partial class GPS_test : ContentPage
         _ = InitializeUserDataAsync();
     }
 
-    // ���� ��� �������� ���������� ��������
+    // основные рабочие переменные
     public double longitudeToDb;
     public double latitudeToDb;
     public int speedToDb;
-    public double bearingToDb; // ���� ��� ����������� ��������
+    public double bearingToDb; 
     public bool isleader = true;
 
-    // ����, ��������������, ��������� �� �� ��� �� ������� (����� �� ������������� ��������)
+    // булева переменная для проверки, запущена ли уже прослушка GPS
     private bool _isListening;
 
-    // ��� ���������� ������ �������� ������ � ������
+    // токен для работы с отправкой погоды
     private CancellationTokenSource ctsWeather;
 
-    // 1. �������� ������ ������������
+    // 1. Получаем данные пользователя
     private async Task InitializeUserDataAsync()
     {
         user = await GetUserDataFromServer(UserName);
@@ -60,16 +60,16 @@ public partial class GPS_test : ContentPage
         }
     }
 
-    // 2. ������ ������������� ����������
+    // 2. Начинаем прослушку GPS
     private async Task StartListeningAsync()
     {
         try
         {
-            // ���������, �� �������� �� ��� �������������
+            
             if (_isListening)
                 return;
 
-            // ����������� ���������� �� ������������� ���������� (MAUI Permissions)
+            // Запрашиваем разрешение на использование GPS (MAUI Permissions)
             var status = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
             if (status != PermissionStatus.Granted)
             {
@@ -77,22 +77,22 @@ public partial class GPS_test : ContentPage
                 return;
             }
 
-            // �������� ������� ��������� �����������
+            // Создание экземпляра геолокатора
             var locator = CrossGeolocator.Current;
 
-            // ������������� �� ������� ��������� ���������
+            // Подписка на события изменения координат и ошибок
             locator.PositionChanged += OnPositionChanged;
             locator.PositionError += OnPositionError;
 
-            // ����������� ������������� � ���������� ���������� heading
+            // Запуск прослушивания координат
             await locator.StartListeningAsync(
-                TimeSpan.FromSeconds(1), // ��������
-                0,                       // ��������� (�)
-                includeHeading: true,    // �������� ��������� ����������� 
-                                         // Heading ������������ � �������� �� 0 �� 360, ��� 0 - �����
+                TimeSpan.FromSeconds(1), // Интервал обновления (1 секунда)
+                0,                       // Дистанция обновления (0 метров)
+                includeHeading: true,    // Включаем направление движения
+                                         // Heading в градусах от 0 до 360
                 new ListenerSettings
                 {
-                    // ����� ��������� ��������� � ������ ���������
+                    
                     ActivityType = ActivityType.AutomotiveNavigation,
                     AllowBackgroundUpdates = true,
                     ListenForSignificantChanges = false,
@@ -108,7 +108,7 @@ public partial class GPS_test : ContentPage
         }
     }
 
-    // 3. ���������� ������� PositionChanged � ���������� heading
+    // 3. Обработчик изменения позиции
     private void OnPositionChanged(object sender, PositionEventArgs e)
     {
         try
@@ -117,32 +117,29 @@ public partial class GPS_test : ContentPage
             if (position == null)
                 return;
 
-            // �������� ����������
+            // Обновление координат
             latitudeToDb = position.Latitude;
             longitudeToDb = position.Longitude;
-
-            // �������� ����������� �������� ����� �� GPS
-            // Heading ������������ � �������� �� 0 �� 360, ��� 0 - �����
             bearingToDb = position.Heading;
 
-            // �������� (�/�), ��������� � ��/�
+            // Получение скорости в км/ч
             double speedMps = position.Speed;
             double speedKmh = speedMps * 3.6;
             speedToDb = Convert.ToInt32(speedKmh);
 
-            // ��������� UI �� ������� ������
+            // Обновление интерфейса
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                gpsLabel.Text = $"������� ����������: {position.Latitude}, {position.Longitude}";
-                speedLabel.Text = $"��������: {Math.Round(speedKmh, 3)} ��/�";
-                // ����� �������� ����� label ��� ����������� �����������
-                if (headingLabel != null) // ���� �������� ����� label
+                gpsLabel.Text = $"Текущие координаты: {position.Latitude}, {position.Longitude}";
+                speedLabel.Text = $"Скорость: {Math.Round(speedKmh, 3)} км/ч";
+                
+                if (headingLabel != null) 
                 {
-                    headingLabel.Text = $"�����������: {Math.Round(bearingToDb, 1)}�";
+                    headingLabel.Text = $"Направление: {Math.Round(bearingToDb, 1)}°";
                 }
             });
 
-            // ���������� ������ �� ������ (fire-and-forget, ����� �� ����������� �������)
+            // Отправка данных на сервер
             _ = SendDataToServerAsync();
         }
         catch (Exception ex)
@@ -154,10 +151,10 @@ public partial class GPS_test : ContentPage
         }
     }
 
-    // 4. ���������� ������ ����������������
+    // 4. Обработчик ошибок геолокации
     private void OnPositionError(object sender, PositionErrorEventArgs e)
     {
-        // ��������� ������ ����������
+        
         var error = e.Error;
         MainThread.BeginInvokeOnMainThread(() =>
         {
@@ -165,7 +162,7 @@ public partial class GPS_test : ContentPage
         });
     }
 
-    // 5. ����� �������� ������ � ������ ��� � ��� 
+    // 5. Циклическая отправка погодных данных (раз в час)
     private async Task StartWeatherUpdates(CancellationToken cancellationToken)
     {
         while (!cancellationToken.IsCancellationRequested)
@@ -176,34 +173,33 @@ public partial class GPS_test : ContentPage
             }
             catch (Exception ex)
             {
-                // �������� ��� �������������
+                
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
                     gpsLabel.Text = $"Failed to send weather data: {ex.Message}";
                 });
             }
-            // ��� 1 ���, ���� ������
+            
             await Task.Delay(TimeSpan.FromHours(1), cancellationToken);
         }
     }
 
-    // 6. ������ � ��������� ����������
+    // 6. Запуск передачи данных
     private async void Start_SendingData(object sender, EventArgs e)
     {
-        // ��������� �������� �� ����������
+        
         await StartListeningAsync();
 
-        // ��������� ����������� (��� � ���) ���������� ������
+        
         ctsWeather = new CancellationTokenSource();
         _ = Task.Run(() => StartWeatherUpdates(ctsWeather.Token));
     }
 
+    // 7. Остановка передачи данных
     private async void Stop_SendingData(object sender, EventArgs e)
     {
-        // ������������� ������
         ctsWeather?.Cancel();
 
-        // ������������� �������� �� ����������
         if (_isListening)
         {
             var locator = CrossGeolocator.Current;
@@ -222,7 +218,7 @@ public partial class GPS_test : ContentPage
 
     }
 
-    // 7. �������� ������ �� ������ (�������� bearing)
+    // 8. Отправка данных на сервер
     public async Task SendDataToServerAsync()
     {
         try
@@ -246,7 +242,7 @@ public partial class GPS_test : ContentPage
                 username = UserName,
                 isleader = isleader,
                 current_car = current_car,
-                bearing = bearingToDb  // ��������� ����������� ��������
+                bearing = bearingToDb  
             };
 
             var jsonData = System.Text.Json.JsonSerializer.Serialize(data);
@@ -281,11 +277,11 @@ public partial class GPS_test : ContentPage
                     {
                         if (leaderStatusLabel != null)
                         {
-                            leaderStatusLabel.Text = returnedData.isleader ? "Я лидер" : "Я ведомый";
+                            leaderStatusLabel.Text = returnedData.isleader ? "Вы лидер" : "Вы ведомый";
                         }
                     });
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     MainThread.BeginInvokeOnMainThread(() =>
                     {
@@ -311,7 +307,7 @@ public partial class GPS_test : ContentPage
         }
     }
 
-    // 8. �������� ������ � ������ (�������� bearing)
+    // 9. Отправка погодных данных
     public async Task SendWeatherAsync()
     {
         var wdata = new
@@ -319,8 +315,8 @@ public partial class GPS_test : ContentPage
             longitude = longitudeToDb,
             latitude = latitudeToDb,
             username = UserName,
-            isleader = isleader,
-            bearing = bearingToDb  // ��������� �����������
+            isleader = isleader
+             
         };
         var jsonData = System.Text.Json.JsonSerializer.Serialize(wdata);
         var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
