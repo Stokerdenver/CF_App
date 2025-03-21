@@ -242,59 +242,33 @@ public partial class GPS_test : ContentPage
                 username = UserName,
                 isleader = isleader,
                 current_car = current_car,
-                bearing = bearingToDb  
+                bearing = bearingToDb  // Передаем направление движения
             };
 
             var jsonData = System.Text.Json.JsonSerializer.Serialize(data);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+            // Отправляем данные на сервер
             var response = await httpClient.PostAsync($"{AppSettings.ServerUrl}/api/MainData", content);
 
             if (response.IsSuccessStatusCode)
             {
-                try
-                {
-                    var result = await response.Content.ReadAsStringAsync();
-                    if (string.IsNullOrEmpty(result))
-                    {
-                        MainThread.BeginInvokeOnMainThread(() =>
-                        {
-                            gpsLabel.Text = "Получен пустой ответ от сервера";
-                        });
-                        return;
-                    }
+                // Получаем ответ с обновленными данными (включая поле isleader)
+                  var result = await response.Content.ReadAsStringAsync();
+                  var returnedData = System.Text.Json.JsonSerializer.Deserialize<MainData>(result);
 
-                    var returnedData = System.Text.Json.JsonSerializer.Deserialize<MainData>(result);
-                    if (returnedData == null)
-                    {
-                        MainThread.BeginInvokeOnMainThread(() =>
-                        {
-                            gpsLabel.Text = "Ошибка десериализации данных";
-                        });
-                        return;
-                    }
-
-                    MainThread.BeginInvokeOnMainThread(() =>
-                    {
-                        if (leaderStatusLabel != null)
-                        {
-                            leaderStatusLabel.Text = returnedData.isleader ? "Вы лидер" : "Вы ведомый";
-                        }
-                    });
-                }
-                catch (System.Text.Json.JsonException ex)
-                {
-                    MainThread.BeginInvokeOnMainThread(() =>
-                    {
-                        gpsLabel.Text = $"Ошибка обработки данных: {ex.Message}";
-                    });
-                }
+                  // Обновляем UI: показываем статус "Лидер" или "Ведомый"
+                  MainThread.BeginInvokeOnMainThread(() =>
+                  {
+                      // Предполагаем, что у вас есть label leaderStatusLabel на странице
+                      leaderStatusLabel.Text = returnedData.isleader ? "Вы Лидер" : "Вы Ведомый";
+                  });
             }
             else
             {
-                var errorContent = await response.Content.ReadAsStringAsync();
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    gpsLabel.Text = $"Ошибка при отправке данных: {response.StatusCode} - {errorContent}";
+                    gpsLabel.Text = "Ошибка при отправке данных";
                 });
             }
         }
