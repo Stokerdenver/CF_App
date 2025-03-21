@@ -4,6 +4,19 @@
              x:Class="Dis_1.GPS_test"
              Title="GPS_test">
     <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
+
+       <Label x:Name="versionLabel"
+       Text="Версия: 1.0"
+       FontSize="20"
+       HorizontalOptions="Center"
+       VerticalOptions="Center" />
+        
+        <Label x:Name=" leaderStatusLabel"
+               Text="Статус: "
+               FontSize="20"
+               HorizontalOptions="Center"
+               VerticalOptions="Center" />
+
         <!-- Метка для отображения координат -->
         <Label x:Name="gpsLabel"
                Text="GPS Coordinates: "
@@ -19,26 +32,28 @@
                VerticalOptions="Center" />
 
         <!-- Метка для отображения вспомогательной инфы -->
-        <Label x:Name="testLabel"
-       Text="Speed: "
+        
+
+        <Label x:Name="errorLabel"
+       Text=" "
        FontSize="20"
        HorizontalOptions="Center"
        VerticalOptions="Center" />
 
-        <Label x:Name="errorLabel"
-       Text="Error: "
-       FontSize="20"
-       HorizontalOptions="Center"
-       VerticalOptions="Center" />
-        
-        
+        <!-- Новый Label для отображения направления движения -->
+        <Label 
+            x:Name="headingLabel"
+            Text=""
+            Margin="0,10,0,0"
+            HorizontalOptions="Center" />
+
         <!-- Кнопка для старта передачи данных -->
         <Button Text="Начать передачу данных" Clicked="Start_SendingData" Margin="0,10,0,0" />
 
         <!-- Кнопка для старта передачи данных -->
         <Button Text="Закончить передачу данных" Clicked="Stop_SendingData" Margin="0,20,0,0" />
 
-
+        <Button Text="Изменить сервер" Clicked="Change_Server" Margin="0,10,0,0" />
 
     </StackLayout>
 </ContentPage>

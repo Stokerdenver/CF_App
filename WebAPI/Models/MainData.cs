@@ -13,6 +13,7 @@ namespace WebAPI.Models
         public string username { get; set; }
         public bool isleader { get; set; }
         public string? current_car{ get; set; }
+        public double bearing { get; set; }
 
 
     }

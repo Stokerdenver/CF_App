@@ -97,7 +97,7 @@ public partial class Profile1 : ContentPage
     public async Task<UserC> GetUserDataFromServer(string userName)
     {
         var client = new HttpClient();
-        var response = await client.GetStringAsync($"http://45.84.225.138:80/api/User/{userName}");
+        var response = await client.GetStringAsync($"{AppSettings.ServerUrl}/api/User/{userName}");
         var user = JsonConvert.DeserializeObject<UserC>(response);
         return user;
         

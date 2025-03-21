@@ -16,7 +16,7 @@ public partial class GPS_test : ContentPage
     public string UserName { get; set; }
     public UserC user;
 
-    // HttpClient для отправки данных, чтобы не создавать на каждый запрос
+    // HttpClient С‡С‚РѕР±С‹ РЅРµ СЃРѕР·РґР°РІР°С‚СЊ РµРіРѕ РїРѕСЃС‚РѕСЏРЅРЅРѕ РІ РєРѕРґРµ
     private static readonly HttpClient httpClient = new HttpClient();
 
     public GPS_test()
@@ -26,19 +26,20 @@ public partial class GPS_test : ContentPage
         _ = InitializeUserDataAsync();
     }
 
-    // Поля для хранения актуальных значений
+    // РѕСЃРЅРѕРІРЅС‹Рµ СЂР°Р±РѕС‡РёРµ РїРµСЂРµРјРµРЅРЅС‹Рµ
     public double longitudeToDb;
     public double latitudeToDb;
     public int speedToDb;
+    public double bearingToDb; 
     public bool isleader = true;
 
-    // Флаг, контролирующий, подписаны ли мы уже на события (чтобы не подписываться повторно)
+    // Р±СѓР»РµРІР° РїРµСЂРµРјРµРЅРЅР°СЏ РґР»СЏ РїСЂРѕРІРµСЂРєРё, Р·Р°РїСѓС‰РµРЅР° Р»Рё СѓР¶Рµ РїСЂРѕСЃР»СѓС€РєР° GPS
     private bool _isListening;
 
-    // Для управления циклом отправки данных о погоде
+    // С‚РѕРєРµРЅ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РѕС‚РїСЂР°РІРєРѕР№ РїРѕРіРѕРґС‹
     private CancellationTokenSource ctsWeather;
 
-    // 1. Получаем данные пользователя (как и прежде)
+    // 1. РџРѕР»СѓС‡Р°РµРј РґР°РЅРЅС‹Рµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     private async Task InitializeUserDataAsync()
     {
         user = await GetUserDataFromServer(UserName);
@@ -59,16 +60,16 @@ public partial class GPS_test : ContentPage
         }
     }
 
-    // 2. Запуск прослушивания геолокации
+    // 2. РќР°С‡РёРЅР°РµРј РїСЂРѕСЃР»СѓС€РєСѓ GPS
     private async Task StartListeningAsync()
     {
         try
         {
-            // Проверяем, не запущено ли уже прослушивание
+            
             if (_isListening)
                 return;
 
-            // Запрашиваем разрешение на использование геолокации (MAUI Permissions)
+            // Р—Р°РїСЂР°С€РёРІР°РµРј СЂР°Р·СЂРµС€РµРЅРёРµ РЅР° РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ GPS (MAUI Permissions)
             var status = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
             if (status != PermissionStatus.Granted)
             {
@@ -76,23 +77,22 @@ public partial class GPS_test : ContentPage
                 return;
             }
 
-            // Получаем текущий экземпляр геолокатора
+            // РЎРѕР·РґР°РЅРёРµ СЌРєР·РµРјРїР»СЏСЂР° РіРµРѕР»РѕРєР°С‚РѕСЂР°
             var locator = CrossGeolocator.Current;
 
-            // Подписываемся на событие изменения положения
+            // РџРѕРґРїРёСЃРєР° РЅР° СЃРѕР±С‹С‚РёСЏ РёР·РјРµРЅРµРЅРёСЏ РєРѕРѕСЂРґРёРЅР°С‚ Рё РѕС€РёР±РѕРє
             locator.PositionChanged += OnPositionChanged;
             locator.PositionError += OnPositionError;
 
-            // Настраиваем прослушивание:
-            //  - интервал обновлений: 1 сек
-            //  - минимальное расстояние (в метрах) для триггера: 0
+            // Р—Р°РїСѓСЃРє РїСЂРѕСЃР»СѓС€РёРІР°РЅРёСЏ РєРѕРѕСЂРґРёРЅР°С‚
             await locator.StartListeningAsync(
-                TimeSpan.FromSeconds(1), // интервал
-                0,                       // дистанция (м)
-                includeHeading: false,
+                TimeSpan.FromSeconds(1), // РРЅС‚РµСЂРІР°Р» РѕР±РЅРѕРІР»РµРЅРёСЏ (1 СЃРµРєСѓРЅРґР°)
+                0,                       // Р”РёСЃС‚Р°РЅС†РёСЏ РѕР±РЅРѕРІР»РµРЅРёСЏ (0 РјРµС‚СЂРѕРІ)
+                includeHeading: true,    // Р’РєР»СЋС‡Р°РµРј РЅР°РїСЂР°РІР»РµРЅРёРµ РґРІРёР¶РµРЅРёСЏ
+                                         // Heading РІ РіСЂР°РґСѓСЃР°С… РѕС‚ 0 РґРѕ 360
                 new ListenerSettings
                 {
-                    // Можно настроить приоритет и другие параметры
+                    
                     ActivityType = ActivityType.AutomotiveNavigation,
                     AllowBackgroundUpdates = true,
                     ListenForSignificantChanges = false,
@@ -108,7 +108,7 @@ public partial class GPS_test : ContentPage
         }
     }
 
-    // 3. Обработчик события PositionChanged
+    // 3. РћР±СЂР°Р±РѕС‚С‡РёРє РёР·РјРµРЅРµРЅРёСЏ РїРѕР·РёС†РёРё
     private void OnPositionChanged(object sender, PositionEventArgs e)
     {
         try
@@ -117,27 +117,29 @@ public partial class GPS_test : ContentPage
             if (position == null)
                 return;
 
-            // Получаем координаты
+            // РћР±РЅРѕРІР»РµРЅРёРµ РєРѕРѕСЂРґРёРЅР°С‚
             latitudeToDb = position.Latitude;
             longitudeToDb = position.Longitude;
+            bearingToDb = position.Heading;
 
-
-            // Скорость (м/с), переводим в км/ч (умножаем на 3.6)\
-
+            // РџРѕР»СѓС‡РµРЅРёРµ СЃРєРѕСЂРѕСЃС‚Рё РІ РєРј/С‡
             double speedMps = position.Speed;
-
-            // double speedMps = position.Speed;
             double speedKmh = speedMps * 3.6;
             speedToDb = Convert.ToInt32(speedKmh);
 
-            // Обновляем UI на главном потоке
+            // РћР±РЅРѕРІР»РµРЅРёРµ РёРЅС‚РµСЂС„РµР№СЃР°
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                gpsLabel.Text = $"Текущие координаты: {position.Latitude}, {position.Longitude}";
-                speedLabel.Text = $"Скорость: {Math.Round(speedKmh, 3)} км/ч";
+                gpsLabel.Text = $"РўРµРєСѓС‰РёРµ РєРѕРѕСЂРґРёРЅР°С‚С‹: {position.Latitude}, {position.Longitude}";
+                speedLabel.Text = $"РЎРєРѕСЂРѕСЃС‚СЊ: {Math.Round(speedKmh, 3)} РєРј/С‡";
+                
+                if (headingLabel != null) 
+                {
+                    headingLabel.Text = $"РќР°РїСЂР°РІР»РµРЅРёРµ: {Math.Round(bearingToDb, 1)}В°";
+                }
             });
 
-            // Отправляем данные на сервер (fire-and-forget, чтобы не блокировать событие)
+            // РћС‚РїСЂР°РІРєР° РґР°РЅРЅС‹С… РЅР° СЃРµСЂРІРµСЂ
             _ = SendDataToServerAsync();
         }
         catch (Exception ex)
@@ -149,10 +151,10 @@ public partial class GPS_test : ContentPage
         }
     }
 
-    // 4. Обработчик ошибок позиционирования
+    // 4. РћР±СЂР°Р±РѕС‚С‡РёРє РѕС€РёР±РѕРє РіРµРѕР»РѕРєР°С†РёРё
     private void OnPositionError(object sender, PositionErrorEventArgs e)
     {
-        // Обработка ошибок геолокации
+        
         var error = e.Error;
         MainThread.BeginInvokeOnMainThread(() =>
         {
@@ -160,7 +162,7 @@ public partial class GPS_test : ContentPage
         });
     }
 
-    // 5. Метод отправки данных о погоде раз в час (опционально, как у вас было)
+    // 5. Р¦РёРєР»РёС‡РµСЃРєР°СЏ РѕС‚РїСЂР°РІРєР° РїРѕРіРѕРґРЅС‹С… РґР°РЅРЅС‹С… (СЂР°Р· РІ С‡Р°СЃ)
     private async Task StartWeatherUpdates(CancellationToken cancellationToken)
     {
         while (!cancellationToken.IsCancellationRequested)
@@ -171,34 +173,33 @@ public partial class GPS_test : ContentPage
             }
             catch (Exception ex)
             {
-                // логируем при необходимости
+                
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
                     gpsLabel.Text = $"Failed to send weather data: {ex.Message}";
                 });
             }
-            // Ждём 1 час, либо отмену
+            
             await Task.Delay(TimeSpan.FromHours(1), cancellationToken);
         }
     }
 
-    // 6. Запуск и остановка «прослушки»
+    // 6. Р—Р°РїСѓСЃРє РїРµСЂРµРґР°С‡Рё РґР°РЅРЅС‹С…
     private async void Start_SendingData(object sender, EventArgs e)
     {
-        // Запускаем подписку на геолокацию
+        
         await StartListeningAsync();
 
-        // Запускаем параллельно (раз в час) обновление погоды
+        
         ctsWeather = new CancellationTokenSource();
         _ = Task.Run(() => StartWeatherUpdates(ctsWeather.Token));
     }
 
+    // 7. РћСЃС‚Р°РЅРѕРІРєР° РїРµСЂРµРґР°С‡Рё РґР°РЅРЅС‹С…
     private async void Stop_SendingData(object sender, EventArgs e)
     {
-        // Останавливаем погоду
         ctsWeather?.Cancel();
 
-        // Останавливаем подписку на геолокацию
         if (_isListening)
         {
             var locator = CrossGeolocator.Current;
@@ -210,11 +211,14 @@ public partial class GPS_test : ContentPage
         }
 
         gpsLabel.Text = "";
-        testLabel.Text = "";
         speedLabel.Text = "";
+        headingLabel.Text = "";
+        leaderStatusLabel.Text = "";
+
+
     }
 
-    // 7. Отправка данных на сервер (останется похожей на вашу)
+    // 8. РћС‚РїСЂР°РІРєР° РґР°РЅРЅС‹С… РЅР° СЃРµСЂРІРµСЂ
     public async Task SendDataToServerAsync()
     {
         try
@@ -237,12 +241,36 @@ public partial class GPS_test : ContentPage
                 speed = speedToDb,
                 username = UserName,
                 isleader = isleader,
-                current_car = current_car
+                current_car = current_car,
+                bearing = bearingToDb  // РџРµСЂРµРґР°РµРј РЅР°РїСЂР°РІР»РµРЅРёРµ РґРІРёР¶РµРЅРёСЏ
             };
 
             var jsonData = System.Text.Json.JsonSerializer.Serialize(data);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            await httpClient.PostAsync("http://45.84.225.138:80/api/MainData", content);
+
+            // РћС‚РїСЂР°РІР»СЏРµРј РґР°РЅРЅС‹Рµ РЅР° СЃРµСЂРІРµСЂ
+            var response = await httpClient.PostAsync($"{AppSettings.ServerUrl}/api/MainData", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                // РџРѕР»СѓС‡Р°РµРј РѕС‚РІРµС‚ СЃ РѕР±РЅРѕРІР»РµРЅРЅС‹РјРё РґР°РЅРЅС‹РјРё (РІРєР»СЋС‡Р°СЏ РїРѕР»Рµ isleader)
+                  var result = await response.Content.ReadAsStringAsync();
+                  var returnedData = System.Text.Json.JsonSerializer.Deserialize<MainData>(result);
+
+                  // РћР±РЅРѕРІР»СЏРµРј UI: РїРѕРєР°Р·С‹РІР°РµРј СЃС‚Р°С‚СѓСЃ "Р›РёРґРµСЂ" РёР»Рё "Р’РµРґРѕРјС‹Р№"
+                  MainThread.BeginInvokeOnMainThread(() =>
+                  {
+                      // РџСЂРµРґРїРѕР»Р°РіР°РµРј, С‡С‚Рѕ Сѓ РІР°СЃ РµСЃС‚СЊ label leaderStatusLabel РЅР° СЃС‚СЂР°РЅРёС†Рµ
+                      leaderStatusLabel.Text = returnedData.isleader ? "Р’С‹ Р›РёРґРµСЂ" : "Р’С‹ Р’РµРґРѕРјС‹Р№";
+                  });
+            }
+            else
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    gpsLabel.Text = "РћС€РёР±РєР° РїСЂРё РѕС‚РїСЂР°РІРєРµ РґР°РЅРЅС‹С…";
+                });
+            }
         }
         catch (Exception ex)
         {
@@ -253,7 +281,7 @@ public partial class GPS_test : ContentPage
         }
     }
 
-    // 8. Отправка данных о погоде (настраивается раз в час в StartWeatherUpdates)
+    // 9. РћС‚РїСЂР°РІРєР° РїРѕРіРѕРґРЅС‹С… РґР°РЅРЅС‹С…
     public async Task SendWeatherAsync()
     {
         var wdata = new
@@ -262,9 +290,15 @@ public partial class GPS_test : ContentPage
             latitude = latitudeToDb,
             username = UserName,
             isleader = isleader
+             
         };
         var jsonData = System.Text.Json.JsonSerializer.Serialize(wdata);
         var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-        await httpClient.PostAsync("http://45.84.225.138:80/api/Weather", content);
+        await httpClient.PostAsync($"{AppSettings.ServerUrl}/api/Weather", content);
+    }
+
+    private void Change_Server(object sender, EventArgs e)
+    {
+        //AppSettings.ServerUrl = "http://45.84.225.138:81";
     }
 }
