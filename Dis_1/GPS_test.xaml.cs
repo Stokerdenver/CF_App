@@ -35,6 +35,8 @@ public partial class GPS_test : ContentPage
 
     // булева переменная для проверки, запущена ли уже прослушка GPS
     private bool _isListening;
+    private DateTime _lastDataSendTime = DateTime.MinValue;
+    private const int SEND_INTERVAL_MS = 1000; // 1 секунда в миллисекундах
 
     // токен для работы с отправкой погоды
     private CancellationTokenSource ctsWeather;
@@ -223,6 +225,14 @@ public partial class GPS_test : ContentPage
     {
         try
         {
+            // Проверяем, прошла ли 1 секунда с последней отправки
+            var now = DateTime.UtcNow;
+            if ((now - _lastDataSendTime).TotalMilliseconds < SEND_INTERVAL_MS)
+            {
+                return;
+            }
+            _lastDataSendTime = now;
+
             string current_car = string.Empty;
             if (user != null && user.Cars != null && user.Cars.Any())
             {

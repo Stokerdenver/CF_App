@@ -14,6 +14,7 @@
     {
         private readonly AppDbContext _context;
         private static readonly Dictionary<string, DateTime> _lastCalculationTime = new Dictionary<string, DateTime>();
+        private static readonly Dictionary<string, KalmanFilter> _bearingFilters = new Dictionary<string, KalmanFilter>();
 
         public MainDataController(AppDbContext context)
         {
@@ -29,6 +30,13 @@
             // Добавляем текущее время
             mainData.timestamp = DateTime.UtcNow;
 
+            // Сглаживаем значение bearing с помощью фильтра Калмана
+            if (!_bearingFilters.ContainsKey(mainData.username))
+            {
+                _bearingFilters[mainData.username] = new KalmanFilter(q: 0.1, r: 0.5);
+            }
+            mainData.bearing = _bearingFilters[mainData.username].Update(mainData.bearing);
+
             // Добавляем данные в базу данных
             _context.main_data.Add(mainData);
             await _context.SaveChangesAsync();
@@ -41,7 +49,7 @@
             lock (_lastCalculationTime)
             {
                 if (!_lastCalculationTime.ContainsKey(userId) ||
-                    (DateTime.UtcNow - _lastCalculationTime[userId]).TotalSeconds >= 0.5)
+                    (DateTime.UtcNow - _lastCalculationTime[userId]).TotalSeconds >= 1.0)
                 {
                     _lastCalculationTime[userId] = DateTime.UtcNow;
                     shouldCalculateDistance = true;
@@ -50,12 +58,12 @@
 
             if (shouldCalculateDistance)
             {
-                // Получаем данные только тех пользователей, которые активны в последние 4 секунд
+                // Получаем данные только тех пользователей, которые активны в последние 2 секунды
                 var activeClients = await _context.main_data
                     .Where(md => md.username != mainData.username &&
-                           md.timestamp >= DateTime.UtcNow.AddSeconds(-4))
-                    .GroupBy(md => md.username)  // Группируем по имени пользователя
-                    .Select(g => g.OrderByDescending(md => md.timestamp).First())  // Выбираем самую последнюю запись для каждого пользователя
+                           md.timestamp >= DateTime.UtcNow.AddSeconds(-2))
+                    .GroupBy(md => md.username)
+                    .Select(g => g.OrderByDescending(md => md.timestamp).First())
                     .ToListAsync();
 
                 foreach (var clientData in activeClients)
@@ -106,13 +114,13 @@
             if (distance > 0.5) // 500 метров = 0.5 км
                 return false;
 
-            // Проверяем направление движения
+            // Проверяем направление движения с учетом сглаженных значений bearing
             double bearingDiff = Math.Abs(car1.bearing - car2.bearing);
             if (bearingDiff > 180) bearingDiff = 360 - bearingDiff;
 
-            // Автомобили на одной дороге, если они близко и движутся примерно в одном направлении
-            // (разница в направлении менее 30 градусов) 
-            bool sameDirection = bearingDiff < 50;
+            // Увеличиваем допустимую разницу в направлении до 60 градусов
+            // из-за сглаживания значений
+            bool sameDirection = bearingDiff < 60;
             
             return sameDirection;
         }
