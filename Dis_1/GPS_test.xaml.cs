@@ -51,7 +51,7 @@ public partial class GPS_test : ContentPage
     {
         try
         {
-            var response = await httpClient.GetStringAsync($"http://45.84.225.138:80/api/User/{userName}");
+            var response = await httpClient.GetStringAsync($"{AppSettings.ServerUrl}/api/User/{userName}");
             var user = JsonConvert.DeserializeObject<UserC>(response);
             return user;
         }
@@ -216,6 +216,7 @@ public partial class GPS_test : ContentPage
         speedLabel.Text = "";
         headingLabel.Text = "";
         leaderStatusLabel.Text = "";
+        predictedSpeedLabel.Text = "";
 
 
     }
@@ -269,23 +270,26 @@ public partial class GPS_test : ContentPage
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
                     leaderStatusLabel.Text = returnedData.isleader ? "Вы Лидер" : "Вы Ведомый";
-
+                    
+                  
                     if (returnedData.predicted_speed.HasValue)
                     {
-                        predictedSpeedLabel.Text += $"{returnedData.predicted_speed.Value:F1} км/ч";
+                       predictedSpeedLabel.Text = $"{returnedData.predicted_speed.Value:F1} км/ч";
+                       // predictedSpeedLabel.Text = "ok";
                     }
 
                     else
                     {
-                        speedLabel.Text += " / Модель недоступна";
+                        predictedSpeedLabel.Text = " Модель недоступна";
                     }
+                  
                 });
             }
             else
             {
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    gpsLabel.Text = "Ошибка при отправке данных";
+                    gpsLabel.Text = "";//"Ошибка при отправке данных";
                 });
             }
         }

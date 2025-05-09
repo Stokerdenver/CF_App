@@ -264,21 +264,33 @@ private async Task<double?> GetPredictedSpeedForFollower(string username)
         var json = JsonSerializer.Serialize(inputList);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        var client = new HttpClient();
-        var response = await client.PostAsync("http://45.84.225.138:8000/predict-speed", content);
+            var client = new HttpClient
+            {
+                Timeout = TimeSpan.FromSeconds(0.5)
+            };
+            try
+            {
+                var response = await client.PostAsync("http://45.84.225.138:8000/predict-speed", content);
 
-        if (!response.IsSuccessStatusCode)
+                if (!response.IsSuccessStatusCode)
+                    return null;
+
+                var responseBody = await response.Content.ReadAsStringAsync();
+                using var doc = JsonDocument.Parse(responseBody);
+                if (doc.RootElement.TryGetProperty("predicted_speeds", out var speed) &&
+                    speed.ValueKind == JsonValueKind.Number)
+                {
+                    return speed.GetDouble();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при запросе к FastAPI: {ex.Message}");
+               
+            }
             return null;
+        }
 
-        var responseBody = await response.Content.ReadAsStringAsync();
-        using var doc = JsonDocument.Parse(responseBody);
-        var speeds = doc.RootElement.GetProperty("predicted_speeds");
-
-        if (speeds.GetArrayLength() > 0)
-            return speeds[speeds.GetArrayLength() - 1].GetDouble(); // последняя предсказанная скорость
-
-        return null;
     }
-
-}
 }

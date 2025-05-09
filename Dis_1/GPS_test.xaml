@@ -33,7 +33,7 @@
         
         <!-- Метка для отображения предсказанной скорости -->
         <Label x:Name="predictedSpeedLabel"
-       Text="Рекомендация: "
+       Text="Модель"
        FontSize="20"
        HorizontalOptions="Center"
        VerticalOptions="Center" />
