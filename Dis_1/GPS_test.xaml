@@ -30,6 +30,13 @@
                FontSize="20"
                HorizontalOptions="Center"
                VerticalOptions="Center" />
+        
+        <!-- Метка для отображения предсказанной скорости -->
+        <Label x:Name="predictedSpeedLabel"
+       Text="Рекомендация: "
+       FontSize="20"
+       HorizontalOptions="Center"
+       VerticalOptions="Center" />
 
         <!-- Метка для отображения вспомогательной инфы -->
         

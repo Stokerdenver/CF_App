@@ -3,6 +3,8 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using System;
+    using System.Text.Json;
+    using System.Text;
     using System.Threading.Tasks;
     using WebAPI.Data;
     using WebAPI.Models;
@@ -37,9 +39,18 @@
             }
             mainData.bearing = _bearingFilters[mainData.username].Update(mainData.bearing);
 
+            mainData.isleader = false;
+
             // Добавляем данные в базу данных
             _context.main_data.Add(mainData);
             await _context.SaveChangesAsync();
+
+            // === [1] Если пользователь ведомый — вызываем FastAPI ===
+            double? predictedSpeed = null;
+            if (!mainData.isleader)
+            {
+                predictedSpeed = await GetPredictedSpeedForFollower(mainData.username);
+            }
 
             // Проверка, прошла ли 1 секунда с последнего вычисления для текущего пользователя
             string userId = mainData.username;
@@ -91,7 +102,7 @@
                         _context.client_distance.Add(clientDistance);
 
                         // Определяем, кто лидер
-                        await DetermineLeader(mainData, clientData);
+                       // await DetermineLeader(mainData, clientData);
                     }
                 }
 
@@ -99,7 +110,16 @@
                 await _context.SaveChangesAsync();
             }
 
-            return Ok(mainData);
+            return Ok(new
+            {
+                isleader = mainData.isleader,
+                predicted_speed = predictedSpeed.HasValue ? Math.Round(predictedSpeed.Value, 2) : (double?)null,
+                mainData.latitude,
+                mainData.longitude,
+                mainData.speed,
+                mainData.bearing,
+                mainData.timestamp
+            });
         }
         
         // Метод для определения, находятся ли автомобили на одной дороге
@@ -196,5 +216,69 @@
                 await _context.SaveChangesAsync();
             }
         }
+
+        
+
+
+private async Task<double?> GetPredictedSpeedForFollower(string username)
+    {
+        // 1. Получаем последние 10 записей из main_data
+        var recentEntries = await _context.main_data
+            .Where(md => md.username == username)
+            .OrderByDescending(md => md.timestamp)
+            .Take(10)
+            .ToListAsync();
+
+        if (recentEntries.Count < 10)
+            return null;
+
+        // 2. Получаем погодные данные
+        var latestWeather = await _context.weather_data
+            .Where(w => w.username == username)
+            .OrderByDescending(w => w.timestamp)
+            .FirstOrDefaultAsync();
+
+        // 3. Получаем данные пользователя и автомобиля
+        var user = await _context.user
+            .Include(u => u.Cars)
+            .FirstOrDefaultAsync(u => u.name == username);
+
+        var car = user?.Cars?.FirstOrDefault();
+
+        // 4. Формируем список записей
+        var inputList = recentEntries
+            .OrderBy(e => e.timestamp) // важно: по возрастанию
+            .Select(e => new
+            {
+                speed_follower = e.speed,
+                temp = latestWeather?.temp_c ?? 10,
+                precip_mm = latestWeather?.precip_mm ?? 0,
+                age = user?.age ?? 30,
+                driving_experience = user?.driving_exp ?? 5,
+                gender_encoded = user?.sex == "М" ? 1 : 0,
+                car_year = car?.release_year ?? 2015
+            })
+            .ToList();
+
+        // 5. Сериализуем и отправляем POST-запрос в FastAPI
+        var json = JsonSerializer.Serialize(inputList);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+        var client = new HttpClient();
+        var response = await client.PostAsync("http://45.84.225.138:8000/predict-speed", content);
+
+        if (!response.IsSuccessStatusCode)
+            return null;
+
+        var responseBody = await response.Content.ReadAsStringAsync();
+        using var doc = JsonDocument.Parse(responseBody);
+        var speeds = doc.RootElement.GetProperty("predicted_speeds");
+
+        if (speeds.GetArrayLength() > 0)
+            return speeds[speeds.GetArrayLength() - 1].GetDouble(); // последняя предсказанная скорость
+
+        return null;
     }
+
+}
 }

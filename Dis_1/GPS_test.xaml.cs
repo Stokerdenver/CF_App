@@ -263,16 +263,23 @@ public partial class GPS_test : ContentPage
 
             if (response.IsSuccessStatusCode)
             {
-                // Получаем ответ с обновленными данными (включая поле isleader)
-                  var result = await response.Content.ReadAsStringAsync();
-                  var returnedData = System.Text.Json.JsonSerializer.Deserialize<MainData>(result);
+                var result = await response.Content.ReadAsStringAsync();
+                var returnedData = System.Text.Json.JsonSerializer.Deserialize<MainDataResponse>(result);
 
-                  // Обновляем UI: показываем статус "Лидер" или "Ведомый"
-                  MainThread.BeginInvokeOnMainThread(() =>
-                  {
-                      // Предполагаем, что у вас есть label leaderStatusLabel на странице
-                      leaderStatusLabel.Text = returnedData.isleader ? "Вы Лидер" : "Вы Ведомый";
-                  });
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    leaderStatusLabel.Text = returnedData.isleader ? "Вы Лидер" : "Вы Ведомый";
+
+                    if (returnedData.predicted_speed.HasValue)
+                    {
+                        predictedSpeedLabel.Text += $"{returnedData.predicted_speed.Value:F1} км/ч";
+                    }
+
+                    else
+                    {
+                        speedLabel.Text += " / Модель недоступна";
+                    }
+                });
             }
             else
             {
