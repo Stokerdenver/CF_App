@@ -266,11 +266,11 @@ private async Task<double?> GetPredictedSpeedForFollower(string username)
 
             var client = new HttpClient
             {
-                Timeout = TimeSpan.FromSeconds(0.5)
+                Timeout = TimeSpan.FromSeconds(3)
             };
             try
             {
-                var response = await client.PostAsync("http://45.84.225.138:8000/predict-speed", content);
+                var response = await client.PostAsync("http://fastapi2:8000/predict-speed", content);
 
                 if (!response.IsSuccessStatusCode)
                     return null;
