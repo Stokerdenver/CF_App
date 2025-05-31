@@ -17,7 +17,11 @@ public partial class AddCarPage : ContentPage
 
     private async void OnGoToShellClicked(object sender, EventArgs e)
     {
-        Application.Current.MainPage = new AppShell();
+        Application.Current.MainPage = new AppShell();           // :contentReference[oaicite:1]{index=1}
+
+        // 2) переходим по абсолютному маршруту в нужную вкладку/страницу
+        //    "profile" — это значение атрибута Route у ShellContent/Tab
+        await Shell.Current.GoToAsync("//profile");
     }
 
         private async void OnAddCarClicked(object sender, EventArgs e)
@@ -63,7 +67,7 @@ public partial class AddCarPage : ContentPage
         var client = new HttpClient();
         var json = System.Text.Json.JsonSerializer.Serialize(carData);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
-        var response = await client.PostAsync($"{AppSettings.ServerUrl}", content);
+        var response = await client.PostAsync($"{AppSettings.ServerUrl}/api/CarData", content);
     }
 
     public async Task<UserC> GetUserDataFromServer(string userName)
@@ -74,4 +78,5 @@ public partial class AddCarPage : ContentPage
         return user;
 
     }
+
 }

@@ -107,6 +107,9 @@ public partial class RegisterPage : ContentPage
         var response = await client.PostAsync($"{AppSettings.ServerUrl}/api/CarData", content);
     }
 
-    
+    private async void OnBackStepClicked(object sender, EventArgs e)
+    {
+        Application.Current.MainPage = new HelloPage();
+    }
 
 }

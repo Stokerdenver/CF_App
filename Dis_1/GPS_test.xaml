@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Dis_1.GPS_test"
-             Title="GPS_test">
+             Title="Поездка">
     <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
 
        <Label x:Name="versionLabel"
@@ -19,21 +19,21 @@
 
         <!-- Метка для отображения координат -->
         <Label x:Name="gpsLabel"
-               Text="GPS Coordinates: "
+               Text="Координаты: "
                FontSize="20"
                HorizontalOptions="Center"
                VerticalOptions="Center" />
 
         <!-- Метка для отображения скорости -->
         <Label x:Name="speedLabel"
-               Text="Speed: "
+               Text="Скорость: "
                FontSize="20"
                HorizontalOptions="Center"
                VerticalOptions="Center" />
         
         <!-- Метка для отображения предсказанной скорости -->
         <Label x:Name="predictedSpeedLabel"
-       Text="Модель"
+       Text="Модель: "
        FontSize="20"
        HorizontalOptions="Center"
        VerticalOptions="Center" />
@@ -55,12 +55,14 @@
             HorizontalOptions="Center" />
 
         <!-- Кнопка для старта передачи данных -->
-        <Button Text="Начать передачу данных" Clicked="Start_SendingData" Margin="0,10,0,0" />
+        <Button Text="Начать передачу данных" Clicked="Start_SendingData" Margin="0,10,0,0"  WidthRequest="220"
+        MinimumWidthRequest="200" BackgroundColor="#47309C" />
 
         <!-- Кнопка для старта передачи данных -->
-        <Button Text="Закончить передачу данных" Clicked="Stop_SendingData" Margin="0,20,0,0" />
+        <Button Text="Закончить передачу данных" Clicked="Stop_SendingData" Margin="0,20,0,0"  WidthRequest="220"
+        MinimumWidthRequest="200" BackgroundColor="#47309C" />
 
-        <Button Text="Изменить сервер" Clicked="Change_Server" Margin="0,10,0,0" />
+     
 
     </StackLayout>
 </ContentPage>

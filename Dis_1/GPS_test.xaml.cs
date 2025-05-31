@@ -274,7 +274,7 @@ public partial class GPS_test : ContentPage
                   
                     if (returnedData.predicted_speed.HasValue)
                     {
-                       predictedSpeedLabel.Text = $"{returnedData.predicted_speed.Value:F1} км/ч";
+                       predictedSpeedLabel.Text = $"Модель: {returnedData.predicted_speed.Value:F1} км/ч";
                        // predictedSpeedLabel.Text = "ok";
                     }
 

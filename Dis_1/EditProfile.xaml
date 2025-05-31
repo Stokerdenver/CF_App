@@ -92,7 +92,7 @@
                            FontSize="Medium"
                            TextColor="Black"
                            Margin="0,10,0,0" />
-                    <Entry Placeholder="Введите номер автомобиля" />
+                    <Entry Placeholder="Введите номер автомобиля" PlaceholderColor="White" />
 
                     <!-- Модель автомобиля -->
                     <Label Text="Модель:"
@@ -100,7 +100,7 @@
                            FontSize="Medium"
                            TextColor="Black"
                            Margin="0,10,0,0" />
-                    <Entry Placeholder="Введите модель автомобиля" />
+                    <Entry Placeholder="Введите модель автомобиля" PlaceholderColor="White"/>
 
                     <!-- Год выпуска -->
                     <Label Text="Год выпуска:"
@@ -108,7 +108,7 @@
                            FontSize="Medium"
                            TextColor="Black"
                            Margin="0,10,0,0" />
-                    <Entry Placeholder="Введите год выпуска" Keyboard="Numeric" />
+                    <Entry Placeholder="Введите год выпуска" Keyboard="Numeric" PlaceholderColor="White"/>
 
                     <!-- Кнопка Добавить -->
                     <Button Text="Добавить"
@@ -117,6 +117,14 @@
                             CornerRadius="10"
                             HeightRequest="50"
                             Margin="0,20,0,0"/>
+                    
+                    <Button Text="Назад"
+                       BackgroundColor="Black"
+                       TextColor="White"
+                       CornerRadius="10"
+                       HeightRequest="50"
+                       Margin="0,20,0,0"
+                       Clicked="OnBackStepClicked"/>
                 </VerticalStackLayout>
             </Frame>
 

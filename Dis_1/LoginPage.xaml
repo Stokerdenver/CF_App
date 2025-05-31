@@ -13,16 +13,18 @@
                    TextColor="Black"/>
         <Entry x:Name="UsernameEntry" Placeholder="Имя пользователя" />
 
+        <Entry x:Name="PasswordEntry" Placeholder="Введите пароль" IsPassword="True" />
+
         <!-- Кнопка подтвердить -->
         <Button Text="Подтвердить"
-                    BackgroundColor="#2196F3"
-                    TextColor="White"
-                    CornerRadius="20"
-                    HorizontalOptions="FillAndExpand"
-                    Clicked="OnLoginConfirmClicked"/>
-        
+            BackgroundColor="#47309C"
+            TextColor="White"
+            CornerRadius="20"
+            HorizontalOptions="FillAndExpand"
+            Clicked="OnLoginConfirmClicked"/>
+
         <Button Text="Назад"
-            BackgroundColor="#2196F3"
+            BackgroundColor="#47309C"
             TextColor="White"
             CornerRadius="20"
             HorizontalOptions="FillAndExpand"

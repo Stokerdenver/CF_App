@@ -19,12 +19,16 @@
             <ShellContent ContentTemplate="{DataTemplate local:EditProfile}" Route="EditProfile"/>
         </Tab> 
         -->
-        <Tab Title="GPS Авто">
+        <Tab Title="Поездка">
             <ShellContent ContentTemplate="{DataTemplate local:GPS_test}" Route="GPS_test" />
         </Tab>
-        <Tab Title="Профиль">
+        <!--<Tab Title="Профиль">
             <ShellContent ContentTemplate="{DataTemplate local:Profile1}" Route="Profile1" />
-        </Tab>
+        </Tab>-->
+        <ShellContent
+            Title="Профиль"
+            ContentTemplate="{DataTemplate local:Profile1}"
+            Route="profile" />
     </TabBar>
 
 </Shell>

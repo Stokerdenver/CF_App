@@ -2,16 +2,16 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Dis_1.Profile1"
-             Title="Profile1">
+             Title="Профиль">
     <ScrollView>
         <VerticalStackLayout Padding="20">
 
             <!-- Заголовок страницы -->
-            <Label Text="Профиль"
+            <!--<Label Text="Профиль"
                    FontSize="Large"
                    FontAttributes="Bold"
                    HorizontalOptions="Center"
-                   TextColor="#4A4A4A" />
+                   TextColor="#4A4A4A" />-->
 
             <!-- Имя водителя -->
             <Label>
@@ -63,64 +63,54 @@
                     </VerticalStackLayout>
                 </Frame>
 
-                <!-- Информация о текущем автомобиле -->
-                <Frame CornerRadius="20" BackgroundColor="#C6A9F5" Padding="10" WidthRequest="150" HorizontalOptions="End">
-                    <Label x:Name="regNumberLabel"> 
-                        <Label.FormattedText>
-                            <FormattedString>
-                                <Span Text="Текущий автомобиль: " FontSize="18" />
-                                <Span Text="" FontSize="18" FontAttributes="Bold" />
-                            </FormattedString>
-                        </Label.FormattedText>
-                    </Label>
-                </Frame>
+               
             </HorizontalStackLayout>
 
             <!-- Модель автомобиля -->
             <Frame CornerRadius="20" BackgroundColor="#C6A9F5" Padding="10" Margin="0,20,0,10">
                 <Label x:Name="modelLabel"
-                       Text=""
-                       FontAttributes="Bold"
-                       FontSize="Medium"
-                       TextColor="Black" />
+           Text=""
+           FontAttributes="Bold"
+           FontSize="Medium"
+           TextColor="Black" />
             </Frame>
 
             <!-- Выпадающий список выбора автомобиля -->
             <Label Text="Выберете автомобиль:"
-                   FontAttributes="Bold"
-                   FontSize="Medium"
-                   TextColor="Black" />
+       FontAttributes="Bold"
+       FontSize="Medium"
+       TextColor="Black" />
 
             <Picker Title="Выберете автомобиль" 
-                    x:Name="CarPicker"
-                    SelectedIndexChanged="OnCarSelected"
-                    HorizontalOptions="FillAndExpand" />
+        x:Name="CarPicker"
+        SelectedIndexChanged="OnCarSelected"
+        HorizontalOptions="FillAndExpand" />
 
             <!-- Кнопка "Добавить автомобиль" -->
             <Button Text="Добавить автомобиль"
-                     BackgroundColor="Black"
-                     TextColor="White"
-                     CornerRadius="10"
-                     HeightRequest="50"
-                     Margin="0,20,0,0"
-                     Clicked="AddCarButton"/>
+         BackgroundColor="Black"
+         TextColor="White"
+         CornerRadius="10"
+         HeightRequest="50"
+         Margin="0,20,0,0"
+         Clicked="AddCarButton"/>
 
 
             <!-- Кнопка "Редактировать" -->
             <Button Text="Редактировать профиль"
-                    BackgroundColor="Black"
-                    TextColor="White"
-                    CornerRadius="10"
-                    HeightRequest="50"
-                    Margin="0,20,0,0"
-                    Clicked="EditProfileButton"/>
+        BackgroundColor="Black"
+        TextColor="White"
+        CornerRadius="10"
+        HeightRequest="50"
+        Margin="0,20,0,0"
+        Clicked="EditProfileButton"/>
 
-            <Label 
-                x:Name="TestLabel"
-                Text=""
-                FontAttributes="Bold"
-                FontSize="Medium"
-                TextColor="Black" />
+            <!--<Label 
+    x:Name="TestLabel"
+    Text=""
+    FontAttributes="Bold"
+    FontSize="Medium"
+    TextColor="Black" />-->
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

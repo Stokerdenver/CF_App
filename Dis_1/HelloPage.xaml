@@ -21,19 +21,19 @@
 
         <!-- Кнопка Войти -->
         <Button Text="Войти"
-                    BackgroundColor="#2196F3"
-                    TextColor="White"
-                    CornerRadius="20"
-                    HorizontalOptions="FillAndExpand"
-                    Clicked="OnLoginClicked"/>
+             BackgroundColor="#47309C"
+             TextColor="White"
+             CornerRadius="20"
+             HorizontalOptions="FillAndExpand"
+             Clicked="OnLoginClicked"/>
 
         <!-- Кнопка Регистрация -->
         <Button Text="Регистрация"
-                    BackgroundColor="#4CAF50"
-                    TextColor="White"
-                    CornerRadius="20"
-                    HorizontalOptions="FillAndExpand"
-                    Clicked="OnRegisterClicked"/>
+             BackgroundColor="#47309C"
+             TextColor="White"
+             CornerRadius="20"
+             HorizontalOptions="FillAndExpand"
+             Clicked="OnRegisterClicked"/>
 
     </VerticalStackLayout>
 </ContentPage>

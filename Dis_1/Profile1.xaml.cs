@@ -23,9 +23,9 @@ public partial class Profile1 : ContentPage
         var defaultCar = user.Cars.FirstOrDefault();
         if (defaultCar != null)
         {
-            TestLabel.Text = "Машины не найдены";
+            modelLabel.Text = "Машины не найдены";
         }
-        TestLabel.Text = $"Рег. номер: {defaultCar.reg_number}\n" +
+        modelLabel.Text = $"Рег. номер: {defaultCar.reg_number}\n" +
                             $"Модель: {defaultCar.model}\n" +
                             $"Год выпуска: {defaultCar.release_year}"; 
     }
@@ -81,12 +81,12 @@ public partial class Profile1 : ContentPage
             CurrentCar.SelectedCar = selectedCar;
 
             // Устанавливаем BindingContext для элементов отображения данных автомобиля
-            //this.BindingContext = selectedCar;
-            regNumberLabel.Text = selectedCar.reg_number;
+            this.BindingContext = selectedCar;
+           // regNumberLabel.Text = selectedCar.reg_number;
             modelLabel.Text = selectedCar.model;
 
             // Отображаем данные о выбранной машине
-            TestLabel.Text = $"Рег. номер: {selectedCar.reg_number}\n" +
+            modelLabel.Text = $"Рег. номер: {selectedCar.reg_number}\n" +
                             $"Модель: {selectedCar.model}\n" +
                             $"Год выпуска: {selectedCar.release_year}";
         }
