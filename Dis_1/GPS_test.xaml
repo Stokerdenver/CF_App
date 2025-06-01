@@ -19,10 +19,23 @@
 
         <!-- Метка для отображения координат -->
         <Label x:Name="gpsLabel"
-               Text="Координаты: "
+               Text=""
                FontSize="20"
                HorizontalOptions="Center"
                VerticalOptions="Center" />
+
+        <Label x:Name="lonLable"
+           Text="Долгота: "
+           FontSize="20"
+           HorizontalOptions="Center"
+           VerticalOptions="Center" />
+
+        <Label x:Name="latLable"
+           Text="Широта: "
+           FontSize="20"
+           HorizontalOptions="Center"
+           VerticalOptions="Center" />
+
 
         <!-- Метка для отображения скорости -->
         <Label x:Name="speedLabel"

@@ -7,6 +7,7 @@ using Dis_1.Model;
 using Newtonsoft.Json;
 using Plugin.Geolocator;
 using Plugin.Geolocator.Abstractions;
+using System.Globalization;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
@@ -132,7 +133,10 @@ public partial class GPS_test : ContentPage
             // Обновление интерфейса
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                gpsLabel.Text = $"Текущие координаты: {position.Latitude}, {position.Longitude}";
+               // gpsLabel.Text = $"Текущие координаты: {position.Latitude}, {position.Longitude}";
+                lonLable.Text = $"Долгота: {position.Longitude.ToString("F6", CultureInfo.InvariantCulture)}"; 
+                latLable.Text = $"Широта: {position.Latitude.ToString("F6", CultureInfo.InvariantCulture)}";
+
                 speedLabel.Text = $"Скорость: {Math.Round(speedKmh, 3)} км/ч";
                 
                 if (headingLabel != null) 
@@ -212,7 +216,9 @@ public partial class GPS_test : ContentPage
             _isListening = false;
         }
 
-        gpsLabel.Text = "Текущие координаты: ";
+        gpsLabel.Text = "";
+        lonLable.Text = "Долгота: ";
+        latLable.Text = "Широта: ";
         speedLabel.Text = "Скорость: ";
         headingLabel.Text = "";
         leaderStatusLabel.Text = "Статус: ";
