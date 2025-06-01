@@ -51,7 +51,7 @@
                 FontSize="Medium"
                 TextColor="Black"
                 Margin="0,10,0,0" />
-            <Picker x:Name="SexPicker" Title="Выберите пол" SelectedIndexChanged="OnGenderSelected">
+            <Picker x:Name="SexPicker" Title="Выберите пол" SelectedIndexChanged="OnGenderSelected" >
                 <Picker.ItemsSource>
                     <x:Array Type="{x:Type x:String}">
                         <x:String>М</x:String>
@@ -63,7 +63,8 @@
             <!-- Добавление автомобиля -->
             <Frame CornerRadius="20"
                 BackgroundColor="#C6A9F5"
-                Padding="20">
+                Padding="20"
+                Margin="0, 0, 10, 0">
                 <VerticalStackLayout>
 
                     <!-- Заголовок для добавления автомобиля -->

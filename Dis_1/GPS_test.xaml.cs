@@ -212,11 +212,11 @@ public partial class GPS_test : ContentPage
             _isListening = false;
         }
 
-        gpsLabel.Text = "";
-        speedLabel.Text = "";
+        gpsLabel.Text = "Текущие координаты: ";
+        speedLabel.Text = "Скорость: ";
         headingLabel.Text = "";
-        leaderStatusLabel.Text = "";
-        predictedSpeedLabel.Text = "";
+        leaderStatusLabel.Text = "Статус: ";
+        predictedSpeedLabel.Text = "Модель: ";
 
 
     }

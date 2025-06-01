@@ -43,7 +43,7 @@
                             </Label.FormattedText>
                         </Label>
 
-                        <Label>
+                        <Label x:Name="driveExpLabel">
                             <Label.FormattedText>
                                 <FormattedString>
                                     <Span Text="Стаж: " FontSize="18" />
