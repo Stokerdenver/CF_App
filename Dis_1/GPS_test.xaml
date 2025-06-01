@@ -6,7 +6,7 @@
     <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
 
        <Label x:Name="versionLabel"
-       Text="Версия: 1.3"
+       Text="Версия: 1.4"
        FontSize="20"
        HorizontalOptions="Center"
        VerticalOptions="Center" />
